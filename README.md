@@ -425,7 +425,7 @@
       </div>
 
       <div class="card">
-        <h1 class="title">Hello, patient Dương — tap Continue to pick a restaurant</h1>
+        <h1 class="title">hiii anh Duong, you have a mission</h1>
         <p class="sub">
           Your nurse cat brings 4 mystery gift boxes. Tap one to reveal your meal spot — no take-backs 😼🩷
         </p>
@@ -673,4 +673,4 @@
     });
   </script>
 </body>
-</html># blindbox
+</html>
