@@ -1,676 +1,932 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Blind Box Restaurant Picker</title>
-  <style>
-    :root{
-      --bg1:#fff0f7;
-      --bg2:#ffe3f1;
-      --pink:#ff4fa3;
-      --pink2:#ff86c6;
-      --hot:#ff2b8a;
-      --ink:#4a2a3a;
-      --card:#ffffffcc;
-      --shadow: 0 14px 30px rgba(255, 79, 163, .18);
-      --shadow2: 0 10px 20px rgba(74, 42, 58, .10);
-      --radius: 22px;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-      color:var(--ink);
-      background: radial-gradient(1200px 700px at 20% 0%, var(--bg2), transparent 60%),
-                  radial-gradient(900px 600px at 90% 30%, #ffe9f6, transparent 55%),
-                  linear-gradient(180deg, var(--bg1), #ffffff);
-      min-height:100dvh;
-      overflow-x:hidden;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>MISSION: FOOD ▶</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:       #0a0a1a;
+    --bg2:      #12122a;
+    --panel:    #1a1a3e;
+    --border:   #5858f8;
+    --border2:  #a0a0ff;
+    --yellow:   #f8e800;
+    --red:      #e82020;
+    --green:    #20e840;
+    --cyan:     #20e8f8;
+    --white:    #e8e8f8;
+    --shadow:   #000080;
+    --pink:     #f820a8;
+    --orange:   #f89820;
+    --pixel: 4px;
+  }
 
-    .blob{
-      position:fixed;
-      width:220px; height:220px;
-      background: radial-gradient(circle at 30% 30%, #ffd2ea, #ff9bd1);
-      opacity:.35;
-      border-radius: 60% 40% 55% 45% / 50% 55% 45% 50%;
-      animation: float 10s ease-in-out infinite;
-      z-index:-1;
-    }
-    .blob.b1{left:-70px; top:80px; animation-duration: 12s;}
-    .blob.b2{right:-90px; top:240px; width:260px; height:260px; opacity:.25; animation-duration: 14s;}
-    .blob.b3{left:30px; bottom:-120px; width:300px; height:300px; opacity:.18; animation-duration: 16s;}
-    @keyframes float{
-      0%,100%{ transform: translate(0,0) rotate(0deg);}
-      50%{ transform: translate(16px,-18px) rotate(6deg);}
-    }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    .wrap{ max-width: 430px; margin: 0 auto; padding: 18px 16px 26px; }
+  body {
+    font-family: 'Press Start 2P', monospace;
+    background-color: var(--bg);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+    cursor: default;
+    image-rendering: pixelated;
+  }
 
-    .topbar{ display:flex; align-items:center; justify-content:space-between; margin-top: 6px; }
-    .chip{
-      display:inline-flex; align-items:center; gap:8px;
-      padding: 10px 12px;
-      border-radius: 999px;
-      background: #ffffffaa;
-      box-shadow: var(--shadow2);
-      border: 1px solid #ffd2ea;
-      font-weight: 800;
-      letter-spacing:.2px;
-      font-size: 13px;
-    }
-    .dot{
-      width:10px; height:10px; border-radius:999px;
-      background: var(--pink);
-      box-shadow: 0 0 0 4px rgba(255,79,163,.15);
-    }
+  /* Scanline effect */
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 3px,
+      rgba(0,0,0,0.08) 3px,
+      rgba(0,0,0,0.08) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+  }
 
-    .card{
-      background: var(--card);
-      border: 1px solid #ffd2ea;
-      border-radius: var(--radius);
-      padding: 16px;
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(10px);
-    }
+  /* Star field bg */
+  .starfield {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
+    overflow: hidden;
+  }
 
-    .title{ font-size: 22px; line-height: 1.15; margin: 0 0 10px; letter-spacing: .2px; }
-    .sub{ margin:0; opacity:.86; line-height:1.35; font-size: 14px; }
+  .star {
+    position: absolute;
+    width: 3px; height: 3px;
+    background: white;
+    animation: twinkle linear infinite;
+    image-rendering: pixelated;
+  }
 
-    .btn{
-      width:100%;
-      border:none;
-      padding: 14px 16px;
-      border-radius: 16px;
-      font-weight: 900;
-      font-size: 16px;
-      color: white;
-      background: linear-gradient(135deg, var(--pink), var(--hot));
-      box-shadow: 0 14px 28px rgba(255,43,138,.25);
-      cursor:pointer;
-      transform: translateY(0);
-      transition: transform .08s ease, filter .12s ease;
-    }
-    .btn:active{ transform: translateY(2px); filter: brightness(.98); }
+  @keyframes twinkle {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.1; }
+  }
 
-    .btn.secondary{ background: linear-gradient(135deg, #ff9bd1, #ff65b2); }
-    .btn.ghost{
-      background: #fff;
-      color: var(--hot);
-      border: 2px solid #ffd2ea;
-      box-shadow: var(--shadow2);
-    }
+  /* Pages */
+  .page {
+    display: none;
+    position: relative;
+    z-index: 10;
+    min-height: 100vh;
+    padding: 24px 16px 48px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .page.active { display: flex; }
 
-    .page{ display:none; }
-    .page.active{ display:block; }
+  /* ---- PIXEL PANEL ---- */
+  .pixel-panel {
+    background: var(--panel);
+    border: var(--pixel) solid var(--border);
+    box-shadow:
+      0 0 0 var(--pixel) var(--shadow),
+      inset 0 0 0 var(--pixel) rgba(255,255,255,0.04),
+      0 0 40px rgba(88,88,248,0.25);
+    padding: 24px 20px;
+    width: 100%;
+    max-width: 360px;
+    position: relative;
+  }
 
-    /* ===== Cute Cat Nurse Mascot (CSS-only, original) ===== */
-    .mascot{ margin: 12px auto 16px; width: 200px; height: 200px; position: relative; }
-    .hat{
-      position:absolute;
-      left: 52px; top: 0px;
-      width: 96px; height: 62px;
-      background: #fff;
-      border-radius: 18px 18px 22px 22px;
-      border: 2px solid #ffd2ea;
-      box-shadow: var(--shadow2);
-      z-index: 3;
-    }
-    .hat:before{
-      content:"";
-      position:absolute; left: 14px; right: 14px; bottom:-12px;
-      height: 24px;
-      background: #fff;
-      border-radius: 999px;
-      border: 2px solid #ffd2ea;
-    }
-    .plus{
-      position:absolute; left: 50%; top: 18px;
-      width: 28px; height: 28px;
-      transform: translateX(-50%);
-      border-radius: 10px;
-      background: #ffe3f1;
-      border: 2px solid #ffd2ea;
-      display:grid; place-items:center;
-    }
-    .plus i{
-      display:block;
-      width: 16px; height: 4px;
-      background: var(--pink);
-      border-radius: 999px;
-      position:relative;
-    }
-    .plus i:after{
-      content:"";
-      position:absolute; left: 6px; top:-6px;
-      width: 4px; height: 16px;
-      background: var(--pink);
-      border-radius: 999px;
-    }
+  /* Corner decorations */
+  .pixel-panel::before,
+  .pixel-panel::after {
+    content: '■';
+    position: absolute;
+    color: var(--border2);
+    font-size: 10px;
+    line-height: 1;
+  }
+  .pixel-panel::before { top: 6px; left: 8px; }
+  .pixel-panel::after  { bottom: 6px; right: 8px; }
 
-    .head{
-      position:absolute;
-      left: 24px; top: 36px;
-      width: 152px; height: 148px;
-      background: linear-gradient(180deg, #ffd4eb, #ffb7dc);
-      border-radius: 48% 52% 52% 48% / 55% 55% 45% 45%;
-      border: 2px solid #ffb0d8;
-      box-shadow: 0 12px 24px rgba(255,79,163,.18);
-      z-index: 2;
-    }
-    .ear{
-      position:absolute;
-      width: 46px; height: 46px;
-      background: linear-gradient(180deg, #ffd4eb, #ffb7dc);
-      border: 2px solid #ffb0d8;
-      border-radius: 10px 46px 10px 46px;
-      transform: rotate(10deg);
-      z-index: 1;
-    }
-    .ear.l{ left: 22px; top: 40px; transform: rotate(-18deg); }
-    .ear.r{ right: 22px; top: 40px; transform: rotate(18deg) scaleX(-1); }
-    .ear:after{
-      content:"";
-      position:absolute; inset: 10px 12px 10px 12px;
-      background: rgba(255,79,163,.22);
-      border-radius: 10px 46px 10px 46px;
-      filter: blur(.2px);
-    }
+  /* ---- TITLE BAR ---- */
+  .title-bar {
+    background: var(--border);
+    margin: -24px -20px 20px;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: var(--pixel) solid var(--border2);
+  }
 
-    .eye{
-      position:absolute;
-      top: 72px;
-      width: 18px; height: 18px;
-      background: #3b2431;
-      border-radius: 999px;
-      box-shadow: inset 0 -3px 0 rgba(255,255,255,.18);
-    }
-    .eye.l{ left: 54px; }
-    .eye.r{ right: 54px; }
+  .title-bar-text {
+    color: var(--yellow);
+    font-size: 8px;
+    letter-spacing: 1px;
+    text-shadow: 2px 2px 0 #000;
+  }
 
-    .cheek{
-      position:absolute; top: 94px;
-      width: 24px; height: 14px;
-      background: rgba(255,79,163,.25);
-      border-radius: 999px;
-    }
-    .cheek.l{ left: 32px; }
-    .cheek.r{ right: 32px; }
+  .title-bar-dots {
+    display: flex;
+    gap: 5px;
+  }
 
-    .nose{
-      position:absolute; left:50%; top: 92px;
-      width: 14px; height: 10px;
-      transform: translateX(-50%);
-      background: rgba(59,36,49,.95);
-      border-radius: 8px 8px 10px 10px;
-    }
-    .mouth{
-      position:absolute; left:50%; top: 104px;
-      width: 40px; height: 22px;
-      transform: translateX(-50%);
-      border-bottom: 4px solid rgba(59,36,49,.9);
-      border-radius: 0 0 40px 40px;
-      opacity:.9;
-    }
-    .whisker{
-      position:absolute; top: 104px;
-      width: 34px; height: 2px;
-      background: rgba(59,36,49,.35);
-      border-radius: 999px;
-    }
-    .whisker.l1{ left: 12px; transform: rotate(8deg); }
-    .whisker.l2{ left: 12px; top: 112px; transform: rotate(-8deg); }
-    .whisker.r1{ right: 12px; transform: rotate(-8deg); }
-    .whisker.r2{ right: 12px; top: 112px; transform: rotate(8deg); }
+  .dot {
+    width: 10px; height: 10px;
+    border: 2px solid rgba(255,255,255,0.3);
+  }
+  .dot.r { background: var(--red); }
+  .dot.y { background: var(--yellow); }
+  .dot.g { background: var(--green); }
 
-    .mask{
-      position:absolute; left:50%; top: 86px;
-      width: 112px; height: 58px;
-      transform: translateX(-50%);
-      background: rgba(255,255,255,.82);
-      border: 2px solid #ffd2ea;
-      border-radius: 18px;
-      box-shadow: var(--shadow2);
-      display:flex; align-items:center; justify-content:center;
-      gap:8px;
-      z-index: 3;
-    }
-    .mask span{ width: 10px; height: 10px; border-radius: 999px; background: rgba(255,79,163,.35); }
-    .mask .strap{
-      position:absolute;
-      top: 20px;
-      width: 36px; height: 10px;
-      background: rgba(255,255,255,.8);
-      border: 2px solid #ffd2ea;
-      border-radius: 999px;
-    }
-    .mask .strap.left{ left: -22px; }
-    .mask .strap.right{ right: -22px; }
+  /* ---- SPRITE ---- */
+  .sprite-wrap {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    position: relative;
+  }
 
-    .grid{
-      display:grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 14px;
-      margin-top: 14px;
-    }
-    .box{
-      position:relative;
-      border-radius: 20px;
-      padding: 14px 12px 12px;
-      background: #fff;
-      border: 2px solid #ffd2ea;
-      box-shadow: var(--shadow2);
-      min-height: 150px;
-      cursor:pointer;
-      user-select:none;
-      overflow:hidden;
-      transition: transform .12s ease, box-shadow .12s ease;
-    }
-    .box:active{ transform: scale(.99); }
-    .box.locked{ cursor: default; opacity: .75; }
-    .box.revealed{
-      border-color: rgba(255,79,163,.45);
-      box-shadow: 0 16px 34px rgba(255,79,163,.22);
-    }
-    .box .ribbon{
-      position:absolute;
-      left:-30px; top: 18px;
-      width: 160px; height: 26px;
-      background: linear-gradient(135deg, #ff8cc7, #ff3f9b);
-      transform: rotate(-14deg);
-      border-radius: 999px;
-      opacity:.95;
-    }
-    .box .tag{
-      position:absolute;
-      right: 10px; top: 10px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      font-weight: 900;
-      font-size: 12px;
-      color: #fff;
-      background: rgba(255,79,163,.9);
-      box-shadow: 0 10px 18px rgba(255,79,163,.22);
-    }
-    .present{
-      width: 88px; height: 78px;
-      margin: 26px auto 10px;
-      position: relative;
-    }
-    .present .p1{
-      position:absolute; inset: 14px 6px 0 6px;
-      background: linear-gradient(180deg, #ffd2ea, #ff94c9);
-      border-radius: 16px;
-      border: 2px solid #ffb0d8;
-      box-shadow: 0 10px 18px rgba(255,79,163,.18);
-    }
-    .present .p2{
-      position:absolute; left: 50%; top: 16px;
-      width: 14px; height: 62px;
-      transform: translateX(-50%);
-      background: linear-gradient(180deg, #ff4fa3, #ff2b8a);
-      border-radius: 999px;
-    }
-    .present .bow{
-      position:absolute; left:50%; top: 0px;
-      width: 64px; height: 34px;
-      transform: translateX(-50%);
-      display:flex; gap:8px; justify-content:center;
-    }
-    .present .bow:before, .present .bow:after{
-      content:"";
-      width: 30px; height: 24px;
-      background: linear-gradient(180deg, #ff8cc7, #ff3f9b);
-      border-radius: 18px 18px 18px 6px;
-      border: 2px solid #ff5fb0;
-      transform: rotate(10deg);
-    }
-    .present .bow:after{
-      border-radius: 18px 18px 6px 18px;
-      transform: rotate(-10deg);
-    }
+  .pixel-sprite {
+    image-rendering: pixelated;
+    animation: float 1.6s ease-in-out infinite;
+  }
 
-    .hint{ font-size: 13px; opacity:.82; margin: 8px 0 0; text-align:center; }
-    .revealText{ margin: 10px 0 2px; text-align:center; font-weight: 1000; font-size: 16px; letter-spacing:.2px; }
-    .muted{ opacity:.72; font-size: 12px; text-align:center; margin:0; }
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-8px); }
+  }
 
-    .overlay{
-      position:fixed; inset:0;
-      background: rgba(34, 12, 22, .35);
-      display:none;
-      align-items:flex-end;
-      justify-content:center;
-      padding: 14px 14px 18px;
-      z-index: 50;
-    }
-    .overlay.show{ display:flex; }
-    .sheet{
-      width:min(430px, 100%);
-      background: #fff;
-      border-radius: 24px;
-      border: 2px solid #ffd2ea;
-      box-shadow: 0 30px 70px rgba(34,12,22,.25);
-      overflow:hidden;
-      transform: translateY(8px);
-      animation: up .18s ease-out forwards;
-    }
-    @keyframes up{ to{ transform: translateY(0); } }
-    .sheetHeader{
-      padding: 14px 16px;
-      background: linear-gradient(135deg, #ffe3f1, #fff);
-      border-bottom: 1px solid #ffe3f1;
-      display:flex; align-items:center; justify-content:space-between;
-      gap: 12px;
-    }
-    .pill{
-      display:inline-flex; align-items:center; gap:8px;
-      padding: 8px 12px;
-      border-radius: 999px;
-      background: #fff;
-      border: 2px solid #ffd2ea;
-      font-weight: 900;
-      color: var(--hot);
-    }
-    .sheetBody{ padding: 14px 16px 16px; }
-    .bigPick{ font-size: 22px; font-weight: 1000; margin: 2px 0 6px; letter-spacing: .2px; }
-    .smallPick{ margin:0; opacity:.82; }
-    .sheetBtns{ display:flex; gap: 10px; padding: 0 16px 16px; }
+  /* ---- DIALOGUE BOX ---- */
+  .dialogue-box {
+    background: #08081c;
+    border: var(--pixel) solid var(--border2);
+    padding: 16px;
+    margin-bottom: 20px;
+    position: relative;
+    min-height: 80px;
+  }
 
-    canvas#confetti{ position:fixed; inset:0; pointer-events:none; z-index: 60; }
+  .dialogue-box::before {
+    content: '▼';
+    position: absolute;
+    bottom: 6px;
+    right: 10px;
+    color: var(--white);
+    font-size: 8px;
+    animation: blink 0.8s step-end infinite;
+  }
 
-    footer{ margin-top: 14px; text-align:center; font-size: 12px; opacity:.7; }
-  </style>
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  .dialogue-name {
+    color: var(--yellow);
+    font-size: 7px;
+    margin-bottom: 10px;
+    text-shadow: 1px 1px 0 #000;
+  }
+
+  .dialogue-text {
+    color: var(--white);
+    font-size: 8px;
+    line-height: 2;
+    text-shadow: 1px 1px 0 #000;
+  }
+
+  /* Typewriter */
+  .typewriter {
+    display: inline;
+    border-right: 2px solid var(--white);
+    animation: cursorBlink 0.7s step-end infinite;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  @keyframes cursorBlink {
+    0%, 100% { border-color: var(--white); }
+    50% { border-color: transparent; }
+  }
+
+  /* ---- PIXEL BUTTON ---- */
+  .pixel-btn {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 9px;
+    background: var(--yellow);
+    color: #000;
+    border: none;
+    padding: 14px 20px;
+    cursor: pointer;
+    width: 100%;
+    text-align: center;
+    letter-spacing: 1px;
+    box-shadow: 4px 4px 0 #000, -2px -2px 0 rgba(255,255,255,0.3) inset;
+    transition: transform 0.08s, box-shadow 0.08s;
+    image-rendering: pixelated;
+    display: block;
+    text-decoration: none;
+  }
+
+  .pixel-btn:hover {
+    background: var(--orange);
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 #000, -2px -2px 0 rgba(255,255,255,0.3) inset;
+  }
+
+  .pixel-btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 #000;
+  }
+
+  .pixel-btn.cyan {
+    background: var(--cyan);
+  }
+  .pixel-btn.cyan:hover { background: #40ffff; }
+
+  .pixel-btn.green {
+    background: var(--green);
+  }
+
+  /* ---- HEADER ---- */
+  .game-header {
+    text-align: center;
+    margin-bottom: 20px;
+    color: var(--yellow);
+    font-size: 10px;
+    text-shadow: 3px 3px 0 #000, 0 0 20px rgba(248,232,0,0.5);
+    letter-spacing: 2px;
+    animation: headerGlow 2s ease-in-out infinite;
+  }
+
+  @keyframes headerGlow {
+    0%, 100% { text-shadow: 3px 3px 0 #000, 0 0 10px rgba(248,232,0,0.3); }
+    50% { text-shadow: 3px 3px 0 #000, 0 0 25px rgba(248,232,0,0.8), 0 0 40px rgba(248,232,0,0.4); }
+  }
+
+  .sub-header {
+    text-align: center;
+    color: var(--cyan);
+    font-size: 7px;
+    margin-bottom: 4px;
+    letter-spacing: 1px;
+  }
+
+  .lives-row {
+    text-align: center;
+    font-size: 11px;
+    margin-bottom: 16px;
+    color: var(--red);
+  }
+
+  /* ---- BOXES GRID ---- */
+  .boxes-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    width: 100%;
+    max-width: 360px;
+    margin-bottom: 16px;
+  }
+
+  .gift-box {
+    background: var(--panel);
+    border: var(--pixel) solid var(--border);
+    padding: 18px 10px 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.08s, box-shadow 0.08s, border-color 0.1s;
+    box-shadow: 4px 4px 0 #000;
+    min-height: 120px;
+    position: relative;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .gift-box:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 #000;
+    border-color: var(--yellow);
+  }
+
+  .gift-box:active {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 #000;
+  }
+
+  .gift-box.opened {
+    cursor: default;
+    border-color: var(--green);
+    box-shadow: 4px 4px 0 #000, 0 0 16px rgba(32,232,64,0.3);
+    pointer-events: none;
+  }
+
+  .gift-box.shake {
+    animation: pixelShake 0.35s steps(2) forwards;
+  }
+
+  @keyframes pixelShake {
+    0%   { transform: translate(0,0); }
+    20%  { transform: translate(-4px, 0); }
+    40%  { transform: translate(4px, -4px); }
+    60%  { transform: translate(-4px, 4px); }
+    80%  { transform: translate(4px, 0); }
+    100% { transform: translate(0, 0); }
+  }
+
+  .box-num {
+    position: absolute;
+    top: 5px; right: 7px;
+    color: var(--border2);
+    font-size: 6px;
+  }
+
+  .box-icon {
+    font-size: 36px;
+    margin-bottom: 8px;
+    image-rendering: pixelated;
+    display: block;
+  }
+
+  .box-label {
+    color: var(--border2);
+    font-size: 6px;
+    text-align: center;
+    line-height: 1.8;
+  }
+
+  .box-reveal {
+    color: var(--green);
+    font-size: 7px;
+    text-align: center;
+    line-height: 1.8;
+    text-shadow: 0 0 8px rgba(32,232,64,0.8);
+  }
+
+  .box-reveal-icon {
+    font-size: 28px;
+    margin-bottom: 6px;
+    animation: popIn 0.2s steps(3) forwards;
+  }
+
+  @keyframes popIn {
+    0%   { transform: scale(0); }
+    60%  { transform: scale(1.3); }
+    100% { transform: scale(1); }
+  }
+
+  /* ---- RESULT ---- */
+  .result-header {
+    text-align: center;
+    color: var(--yellow);
+    font-size: 9px;
+    letter-spacing: 2px;
+    margin-bottom: 16px;
+    text-shadow: 3px 3px 0 #000;
+    animation: headerGlow 1.5s ease-in-out infinite;
+  }
+
+  .result-score {
+    text-align: center;
+    color: var(--cyan);
+    font-size: 7px;
+    margin-bottom: 20px;
+    letter-spacing: 1px;
+  }
+
+  .result-icon {
+    font-size: 56px;
+    display: block;
+    text-align: center;
+    margin-bottom: 12px;
+    animation: popIn 0.3s steps(3) forwards;
+  }
+
+  .result-name {
+    color: var(--yellow);
+    font-size: 13px;
+    text-align: center;
+    margin-bottom: 10px;
+    text-shadow: 3px 3px 0 #000, 0 0 20px rgba(248,232,0,0.6);
+    letter-spacing: 2px;
+  }
+
+  .result-msg {
+    color: var(--white);
+    font-size: 7px;
+    text-align: center;
+    line-height: 2.2;
+    margin-bottom: 24px;
+  }
+
+  .hp-bar-wrap {
+    margin-bottom: 20px;
+  }
+
+  .hp-label {
+    color: var(--white);
+    font-size: 6px;
+    margin-bottom: 6px;
+    letter-spacing: 1px;
+  }
+
+  .hp-bar {
+    height: 14px;
+    background: #0a0a1a;
+    border: 3px solid var(--border2);
+    overflow: hidden;
+  }
+
+  .hp-fill {
+    height: 100%;
+    background: var(--green);
+    width: 0%;
+    animation: fillBar 1s steps(20) 0.3s forwards;
+    box-shadow: inset 0 3px 0 rgba(255,255,255,0.3);
+  }
+
+  @keyframes fillBar {
+    to { width: 100%; }
+  }
+
+  /* ---- PIXEL CONFETTI ---- */
+  #confetti-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 500;
+    image-rendering: pixelated;
+  }
+
+  /* Blinking SELECT */
+  .press-start {
+    text-align: center;
+    color: var(--white);
+    font-size: 7px;
+    letter-spacing: 2px;
+    animation: blink 1s step-end infinite;
+    margin-top: 12px;
+  }
+
+  /* Scrolling marquee top bar */
+  .top-bar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    background: var(--border);
+    padding: 5px 0;
+    z-index: 100;
+    overflow: hidden;
+  }
+
+  .marquee-text {
+    color: var(--yellow);
+    font-size: 6px;
+    white-space: nowrap;
+    display: inline-block;
+    animation: marquee 14s linear infinite;
+    letter-spacing: 2px;
+  }
+
+  @keyframes marquee {
+    0%   { transform: translateX(100vw); }
+    100% { transform: translateX(-100%); }
+  }
+
+  /* Pixel divider */
+  .pixel-divider {
+    height: var(--pixel);
+    background: repeating-linear-gradient(90deg, var(--border2) 0, var(--border2) 8px, transparent 8px, transparent 12px);
+    margin: 16px 0;
+  }
+
+  .mt16 { margin-top: 16px; }
+
+  @keyframes screenFlash {
+    0% { opacity: 0; }
+    30% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+
+  .flash-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: white;
+    z-index: 998;
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  .flash-overlay.active {
+    animation: screenFlash 0.4s ease-out forwards;
+  }
+</style>
 </head>
 <body>
-  <div class="blob b1"></div>
-  <div class="blob b2"></div>
-  <div class="blob b3"></div>
 
-  <canvas id="confetti"></canvas>
+<!-- Top scrolling bar -->
+<div class="top-bar">
+  <span class="marquee-text">★ MISSION: FOOD ★ PLAYER: ANH DUONG ★ OBJECTIVE: CHOOSE A RESTAURANT ★ GOOD LUCK! ★ MISSION: FOOD ★</span>
+</div>
 
-  <div class="wrap">
-    <!-- INTRO PAGE -->
-    <section id="pageIntro" class="page active">
-      <div class="topbar">
-        <div class="chip"><span class="dot"></span> Pink Nurse Cat Mode</div>
-        <div class="chip">🐾🎁</div>
-      </div>
+<!-- Starfield -->
+<div class="starfield" id="starfield"></div>
 
-      <div class="mascot" aria-hidden="true">
-        <div class="ear l"></div>
-        <div class="ear r"></div>
+<!-- Flash overlay -->
+<div class="flash-overlay" id="flashOverlay"></div>
 
-        <div class="hat"><div class="plus"><i></i></div></div>
+<!-- Confetti canvas -->
+<canvas id="confetti-canvas"></canvas>
 
-        <div class="head">
-          <div class="eye l"></div>
-          <div class="eye r"></div>
-          <div class="cheek l"></div>
-          <div class="cheek r"></div>
-          <div class="nose"></div>
-          <div class="mouth" style="opacity:.35"></div>
+<!-- ===== PAGE 1: INTRO ===== -->
+<div class="page active" id="page-intro" style="padding-top:56px;">
 
-          <div class="whisker l1"></div>
-          <div class="whisker l2"></div>
-          <div class="whisker r1"></div>
-          <div class="whisker r2"></div>
+  <div class="game-header">★ MISSION: FOOD ★</div>
+  <div class="sub-header">— QUEST BOARD —</div>
 
-          <div class="mask">
-            <div class="strap left"></div>
-            <div class="strap right"></div>
-            <span></span><span></span><span></span>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <h1 class="title">hiii anh Duong, you have a mission</h1>
-        <p class="sub">
-          Your nurse cat brings 4 mystery gift boxes. Tap one to reveal your meal spot — no take-backs 😼🩷
-        </p>
-        <div style="height:14px"></div>
-        <button id="btnContinue" class="btn">Continue</button>
-        <div style="height:10px"></div>
-        <button id="btnDemo" class="btn ghost" type="button">Little wiggle</button>
-      </div>
-
-      <footer>Tip: Open on mobile for the cutest layout ✨</footer>
-    </section>
-
-    <!-- BOX PAGE -->
-    <section id="pageBoxes" class="page">
-      <div class="topbar">
-        <div class="chip"><span class="dot"></span> Pick 1 mystery box</div>
-        <button id="btnResetTop" class="chip" style="border:none; cursor:pointer;">🔄 Reset</button>
-      </div>
-
-      <div class="card">
-        <h2 class="title" style="margin-bottom:8px;">4 Blind Boxes</h2>
-        <p class="sub">Tap <b>one</b> box to lock in today’s restaurant.</p>
-
-        <div class="grid" id="grid"></div>
-
-        <p class="hint" id="hint">Pick any box 👇</p>
-      </div>
-
-      <footer>Built with extra pink energy 🩷</footer>
-    </section>
+  <div style="font-size:11px;color:var(--cyan);text-align:center;margin-bottom:16px">
+    ♥ ♥ ♥
   </div>
 
-  <!-- RESULT SHEET -->
-  <div id="overlay" class="overlay" role="dialog" aria-modal="true" aria-label="Result">
-    <div class="sheet">
-      <div class="sheetHeader">
-        <div class="pill">✅ Result</div>
-        <button id="btnClose" class="chip" style="border:none; cursor:pointer;">✕</button>
+  <!-- Pixel character sprite (chef/guide) -->
+  <div class="sprite-wrap">
+    <!-- Pixel art guide character made with SVG -->
+    <svg class="pixel-sprite" width="80" height="96" viewBox="0 0 80 96" fill="none" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated">
+      <!-- Cat ears -->
+      <rect x="16" y="0"  width="12" height="12" fill="#f8b8d8"/>
+      <rect x="18" y="2"  width="8"  height="8"  fill="#f820a8"/>
+      <rect x="52" y="0"  width="12" height="12" fill="#f8b8d8"/>
+      <rect x="54" y="2"  width="8"  height="8"  fill="#f820a8"/>
+      <!-- Head -->
+      <rect x="14" y="10" width="52" height="36" fill="#fff0f8"/>
+      <!-- Pink hair top -->
+      <rect x="14" y="10" width="52" height="8"  fill="#f820a8"/>
+      <rect x="14" y="18" width="10" height="6"  fill="#f820a8"/>
+      <rect x="56" y="18" width="10" height="6"  fill="#f820a8"/>
+      <rect x="26" y="18" width="6"  height="4"  fill="#f820a8"/>
+      <rect x="48" y="18" width="6"  height="4"  fill="#f820a8"/>
+      <!-- Big shiny eyes -->
+      <rect x="20" y="26" width="16" height="12" fill="#e8e8f8"/>
+      <rect x="44" y="26" width="16" height="12" fill="#e8e8f8"/>
+      <rect x="22" y="28" width="12" height="8"  fill="#20c8f8"/>
+      <rect x="46" y="28" width="12" height="8"  fill="#20c8f8"/>
+      <rect x="25" y="29" width="7"  height="7"  fill="#101020"/>
+      <rect x="49" y="29" width="7"  height="7"  fill="#101020"/>
+      <!-- Eye shine -->
+      <rect x="25" y="29" width="3"  height="3"  fill="#ffffff"/>
+      <rect x="49" y="29" width="3"  height="3"  fill="#ffffff"/>
+      <rect x="29" y="33" width="2"  height="2"  fill="#ffffff"/>
+      <rect x="53" y="33" width="2"  height="2"  fill="#ffffff"/>
+      <!-- Eyelashes top -->
+      <rect x="20" y="24" width="4"  height="2"  fill="#101020"/>
+      <rect x="56" y="24" width="4"  height="2"  fill="#101020"/>
+      <!-- Cat nose -->
+      <rect x="37" y="36" width="6"  height="4"  fill="#f880a0"/>
+      <!-- Cat mouth W -->
+      <rect x="30" y="40" width="4"  height="2"  fill="#e06080"/>
+      <rect x="46" y="40" width="4"  height="2"  fill="#e06080"/>
+      <rect x="32" y="42" width="16" height="2"  fill="#e06080"/>
+      <!-- Blush -->
+      <rect x="14" y="34" width="10" height="6"  fill="#f8a0c0" opacity="0.75"/>
+      <rect x="56" y="34" width="10" height="6"  fill="#f8a0c0" opacity="0.75"/>
+      <!-- Whiskers -->
+      <rect x="2"  y="36" width="14" height="2"  fill="#d0b0c8"/>
+      <rect x="64" y="36" width="14" height="2"  fill="#d0b0c8"/>
+      <rect x="4"  y="32" width="12" height="2"  fill="#d0b0c8" opacity="0.8"/>
+      <rect x="64" y="32" width="12" height="2"  fill="#d0b0c8" opacity="0.8"/>
+      <!-- Body dress (pink) -->
+      <rect x="16" y="46" width="48" height="32" fill="#f820a8"/>
+      <rect x="12" y="48" width="56" height="6"  fill="#f820a8"/>
+      <!-- White collar -->
+      <rect x="28" y="46" width="24" height="6"  fill="#fff0f8"/>
+      <rect x="32" y="52" width="16" height="4"  fill="#fff0f8"/>
+      <!-- Yellow star on chest -->
+      <rect x="36" y="58" width="8"  height="8"  fill="#f8e800"/>
+      <rect x="34" y="60" width="12" height="4"  fill="#f8e800"/>
+      <!-- Sleeves/Arms -->
+      <rect x="2"  y="48" width="14" height="20" fill="#fff0f8"/>
+      <rect x="64" y="48" width="14" height="20" fill="#fff0f8"/>
+      <!-- Paws -->
+      <rect x="0"  y="66" width="16" height="8"  fill="#f8c0d8"/>
+      <rect x="64" y="66" width="16" height="8"  fill="#f8c0d8"/>
+      <rect x="0"  y="64" width="4"  height="4"  fill="#f8d8e8"/>
+      <rect x="6"  y="64" width="4"  height="4"  fill="#f8d8e8"/>
+      <rect x="12" y="64" width="4"  height="4"  fill="#f8d8e8"/>
+      <rect x="64" y="64" width="4"  height="4"  fill="#f8d8e8"/>
+      <rect x="70" y="64" width="4"  height="4"  fill="#f8d8e8"/>
+      <rect x="76" y="64" width="4"  height="4"  fill="#f8d8e8"/>
+      <!-- Legs -->
+      <rect x="20" y="78" width="16" height="14" fill="#f8c0d8"/>
+      <rect x="44" y="78" width="16" height="14" fill="#f8c0d8"/>
+      <!-- Shoes -->
+      <rect x="16" y="88" width="22" height="8"  fill="#f820a8"/>
+      <rect x="42" y="88" width="22" height="8"  fill="#f820a8"/>
+      <!-- Tail -->
+      <rect x="62" y="76" width="8"  height="4"  fill="#f8c0d8"/>
+      <rect x="68" y="80" width="8"  height="4"  fill="#f8c0d8"/>
+      <rect x="72" y="84" width="8"  height="4"  fill="#f8d8e8"/>
+      <rect x="74" y="88" width="6"  height="4"  fill="#f8d8e8"/>
+    </svg>
+  </div>
+
+  <div class="pixel-panel">
+    <div class="title-bar">
+      <span class="title-bar-text">GUIDE NEKO</span>
+      <div class="title-bar-dots">
+        <div class="dot r"></div>
+        <div class="dot y"></div>
+        <div class="dot g"></div>
       </div>
-      <div class="sheetBody">
-        <div class="bigPick" id="pickedName">—</div>
-        <p class="smallPick" id="pickedMsg">Patient Dương, let’s go eat! 🍽️</p>
-      </div>
-      <div class="sheetBtns">
-        <button id="btnAgain" class="btn secondary">Play again</button>
-        <button id="btnOk" class="btn">OK, let’s go</button>
-      </div>
+    </div>
+
+    <div class="dialogue-box">
+      <div class="dialogue-name">▶ NEKO:</div>
+      <div class="dialogue-text" id="introText"></div>
+    </div>
+
+    <div class="pixel-divider"></div>
+
+    <button class="pixel-btn" id="continueBtn" onclick="goToBoxes()" style="display:none">
+      ▶ ACCEPT MISSION
+    </button>
+    <div class="press-start" id="pressStart" style="display:none">▼ PRESS TO CONTINUE</div>
+  </div>
+</div>
+
+<!-- ===== PAGE 2: BOX SELECTION ===== -->
+<div class="page" id="page-boxes" style="padding-top:56px;">
+
+  <div class="game-header">CHOOSE YOUR BOX</div>
+  <div class="sub-header">— 4 MYSTERY CHESTS —</div>
+  <div style="font-size:11px;color:var(--red);text-align:center;margin-bottom:16px">♥ ♥ ♥</div>
+
+  <div class="boxes-grid" id="boxesGrid">
+    <div class="gift-box" id="box-0" onclick="openBox(0)">
+      <span class="box-num">BOX 1</span>
+      <span class="box-icon">📦</span>
+      <div class="box-label">??? <br>MYSTERY<br>CHEST</div>
+    </div>
+    <div class="gift-box" id="box-1" onclick="openBox(1)">
+      <span class="box-num">BOX 2</span>
+      <span class="box-icon">🎁</span>
+      <div class="box-label">??? <br>MYSTERY<br>CHEST</div>
+    </div>
+    <div class="gift-box" id="box-2" onclick="openBox(2)">
+      <span class="box-num">BOX 3</span>
+      <span class="box-icon">📦</span>
+      <div class="box-label">??? <br>MYSTERY<br>CHEST</div>
+    </div>
+    <div class="gift-box" id="box-3" onclick="openBox(3)">
+      <span class="box-num">BOX 4</span>
+      <span class="box-icon">🎁</span>
+      <div class="box-label">??? <br>MYSTERY<br>CHEST</div>
     </div>
   </div>
 
-  <script>
-    const restaurants = ["Ottugi", "Chosim", "Lẩu Wulao", "Sumo"];
+  <div class="pixel-panel" style="max-width:360px">
+    <div class="title-bar">
+      <span class="title-bar-text">MISSION BRIEF</span>
+      <div class="title-bar-dots">
+        <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+      </div>
+    </div>
+    <div style="color:var(--white);font-size:7px;line-height:2.2;text-align:center;">
+      TAP A CHEST TO<br>REVEAL YOUR<br>RESTAURANT DESTINY!
+    </div>
+  </div>
+</div>
 
-    const pageIntro = document.getElementById("pageIntro");
-    const pageBoxes = document.getElementById("pageBoxes");
-    const btnContinue = document.getElementById("btnContinue");
-    const btnResetTop = document.getElementById("btnResetTop");
-    const btnDemo = document.getElementById("btnDemo");
+<!-- ===== PAGE 3: RESULT ===== -->
+<div class="page" id="page-result" style="padding-top:56px;">
 
-    const grid = document.getElementById("grid");
-    const hint = document.getElementById("hint");
+  <div class="result-header">★ QUEST COMPLETE! ★</div>
+  <div class="result-score" id="resultScore">SCORE: +9999 EXP</div>
 
-    const overlay = document.getElementById("overlay");
-    const pickedName = document.getElementById("pickedName");
-    const pickedMsg = document.getElementById("pickedMsg");
-    const btnClose = document.getElementById("btnClose");
-    const btnAgain = document.getElementById("btnAgain");
-    const btnOk = document.getElementById("btnOk");
+  <div class="pixel-panel">
+    <div class="title-bar">
+      <span class="title-bar-text">MISSION RESULT</span>
+      <div class="title-bar-dots">
+        <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+      </div>
+    </div>
 
-    const canvas = document.getElementById("confetti");
-    const ctx = canvas.getContext("2d");
-    let confettiTimer = null;
+    <span class="result-icon" id="resultEmoji">🍜</span>
+    <div style="color:var(--cyan);font-size:7px;text-align:center;margin-bottom:6px;letter-spacing:1px">DESTINATION UNLOCKED:</div>
+    <div class="result-name" id="resultName">OTTUGI</div>
 
-    let shuffled = [];
-    let revealed = false;
+    <div class="pixel-divider"></div>
 
-    function shuffle(arr){
-      const a = arr.slice();
-      for (let i = a.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [a[i], a[j]] = [a[j], a[i]];
-      }
-      return a;
+    <div class="hp-bar-wrap">
+      <div class="hp-label">HUNGER METER:</div>
+      <div class="hp-bar"><div class="hp-fill" id="hpFill"></div></div>
+    </div>
+
+    <div class="result-msg" id="resultMsg">YOUR FOOD DESTINY<br>HAS BEEN DECIDED!</div>
+
+    <div class="pixel-divider"></div>
+
+    <button class="pixel-btn cyan mt16" onclick="resetGame()">
+      ↺ PLAY AGAIN
+    </button>
+  </div>
+
+</div>
+
+<script>
+const restaurants = [
+  { name: "OTTUGI",     emoji: "🍱", msg: "KOREAN CUISINE AWAITS!\nANH DUONG'S STATS +10 JOY!" },
+  { name: "CHOSIM",     emoji: "🥩", msg: "GRILL MASTER QUEST!\nPREPARE THE CHOPSTICKS!" },
+  { name: "HANOI TACO BAR", emoji: "🌮", msg: "TACO QUEST UNLOCKED!\nVIETNAM X MEXICO FUSION!" },
+  { name: "SUMO BBQ",   emoji: "🥓", msg: "LEGENDARY BBQ BUFFET!\nFINAL BOSS: FULL STOMACH!" }
+];
+
+let shuffled = [];
+
+// Stars
+(function() {
+  const sf = document.getElementById('starfield');
+  for (let i = 0; i < 60; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    s.style.left = Math.random() * 100 + '%';
+    s.style.top  = Math.random() * 100 + '%';
+    s.style.animationDuration = (1.5 + Math.random() * 3) + 's';
+    s.style.animationDelay = (Math.random() * 3) + 's';
+    s.style.width = s.style.height = (Math.random() > 0.7 ? '4px' : '2px');
+    s.style.opacity = 0.4 + Math.random() * 0.6;
+    sf.appendChild(s);
+  }
+})();
+
+// Typewriter
+function typewrite(el, text, speed, cb) {
+  el.innerHTML = '';
+  let i = 0;
+  const span = document.createElement('span');
+  span.className = 'typewriter';
+  el.appendChild(span);
+  const iv = setInterval(() => {
+    if (i < text.length) {
+      span.textContent += text[i++];
+    } else {
+      clearInterval(iv);
+      span.classList.remove('typewriter');
+      if (cb) cb();
     }
+  }, speed);
+}
 
-    function showPage(which){
-      pageIntro.classList.remove("active");
-      pageBoxes.classList.remove("active");
-      which.classList.add("active");
-      window.scrollTo({top:0, behavior:"smooth"});
-    }
+// Intro typewriter
+window.addEventListener('load', () => {
+  const el = document.getElementById('introText');
+  const msg = 'Hi anh Duong,\nyou have a mission\nto do...\n\nChoose a mystery\nbox to reveal\nyour restaurant!';
+  typewrite(el, msg, 42, () => {
+    document.getElementById('continueBtn').style.display = 'block';
+    document.getElementById('pressStart').style.display = 'none';
+  });
+});
 
-    function buildBoxes(){
-      grid.innerHTML = "";
-      shuffled = shuffle(restaurants);
-      revealed = false;
-      hint.textContent = "Pick any box 👇";
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
 
-      shuffled.forEach((name, idx) => {
-        const box = document.createElement("div");
-        box.className = "box";
-        box.setAttribute("role", "button");
-        box.setAttribute("tabindex", "0");
-        box.setAttribute("aria-label", "Mystery box " + (idx+1));
+function goToBoxes() {
+  shuffled = shuffle(restaurants);
+  // Reset boxes
+  for (let i = 0; i < 4; i++) {
+    const b = document.getElementById('box-' + i);
+    b.className = 'gift-box';
+    b.onclick = () => openBox(i);
+    b.innerHTML = `
+      <span class="box-num">BOX ${i+1}</span>
+      <span class="box-icon">${i % 2 === 0 ? '📦' : '🎁'}</span>
+      <div class="box-label">???<br>MYSTERY<br>CHEST</div>
+    `;
+  }
+  showPage('page-boxes');
+}
 
-        box.innerHTML = `
-          <div class="ribbon"></div>
-          <div class="tag">BOX ${idx+1}</div>
-          <div class="present" aria-hidden="true">
-            <div class="bow"></div>
-            <div class="p1"></div>
-            <div class="p2"></div>
-          </div>
-          <div class="revealText">Mystery</div>
-          <p class="muted">Tap to open</p>
-        `;
+function flashScreen() {
+  const f = document.getElementById('flashOverlay');
+  f.classList.remove('active');
+  void f.offsetWidth;
+  f.classList.add('active');
+}
 
-        const open = () => {
-          if (revealed) return;
-          revealed = true;
+function openBox(index) {
+  const box = document.getElementById('box-' + index);
+  if (box.classList.contains('opened')) return;
 
-          [...grid.children].forEach(el => el.classList.add("locked"));
-          box.classList.remove("locked");
-          box.classList.add("revealed");
+  // Play shake
+  box.classList.add('shake');
+  setTimeout(() => {
+    box.classList.remove('shake');
+    box.classList.add('opened');
+    box.onclick = null;
 
-          box.querySelector(".revealText").textContent = name;
-          box.querySelector(".muted").textContent = "Opened ✅";
+    const rest = shuffled[index];
+    flashScreen();
 
-          hint.textContent = "Locked in! 🎉";
+    box.innerHTML = `
+      <span class="box-num">BOX ${index+1}</span>
+      <div class="box-reveal-icon">${rest.emoji}</div>
+      <div class="box-reveal">${rest.name}</div>
+    `;
 
-          openResult(name);
-          burstConfetti();
-        };
+    setTimeout(() => showResult(rest), 700);
+  }, 350);
+}
 
-        box.addEventListener("click", open);
-        box.addEventListener("keydown", (e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault();
-            open();
-          }
-        });
+function showResult(rest) {
+  document.getElementById('resultEmoji').textContent = rest.emoji;
+  document.getElementById('resultName').textContent = rest.name;
+  document.getElementById('resultMsg').innerHTML = rest.msg.replace(/\n/g, '<br>');
+  document.getElementById('resultScore').textContent = 'SCORE: +' + (Math.floor(Math.random()*9000)+1000) + ' EXP';
 
-        grid.appendChild(box);
-      });
-    }
+  // Reset HP bar animation
+  const hp = document.getElementById('hpFill');
+  hp.style.animation = 'none';
+  void hp.offsetWidth;
+  hp.style.animation = '';
 
-    function openResult(name){
-      pickedName.textContent = name;
-      pickedMsg.textContent = `Patient Dương — today we’re going to "${name}" 🩷`;
-      overlay.classList.add("show");
-    }
+  showPage('page-result');
+  launchPixelConfetti();
+}
 
-    function closeResult(){ overlay.classList.remove("show"); }
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
 
-    function resetAll(){
-      closeResult();
-      buildBoxes();
-    }
+function resetGame() {
+  showPage('page-intro');
+  const el = document.getElementById('introText');
+  document.getElementById('continueBtn').style.display = 'none';
+  document.getElementById('pressStart').style.display = 'none';
+  const msg = 'Hi anh Duong,\nyou have a mission\nto do...\n\nChoose a mystery\nbox to reveal\nyour restaurant!';
+  typewrite(el, msg, 42, () => {
+    document.getElementById('continueBtn').style.display = 'block';
+  });
+}
 
-    function resizeCanvas(){
-      canvas.width = window.innerWidth * devicePixelRatio;
-      canvas.height = window.innerHeight * devicePixelRatio;
-      canvas.style.width = window.innerWidth + "px";
-      canvas.style.height = window.innerHeight + "px";
-      ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
-    }
-    window.addEventListener("resize", resizeCanvas);
-    resizeCanvas();
+// Pixel confetti
+const canvas = document.getElementById('confetti-canvas');
+const ctx = canvas.getContext('2d');
+let pieces = [], animId;
+const colors = ['#f8e800','#e82020','#20e840','#20e8f8','#f820a8','#f89820','#5858f8','#a0a0ff'];
 
-    function burstConfetti(){
-      const pieces = [];
-      const W = window.innerWidth, H = window.innerHeight;
-      const count = 140;
-
-      for(let i=0;i<count;i++){
-        pieces.push({
-          x: W/2 + (Math.random()*120-60),
-          y: H*0.22 + (Math.random()*60-30),
-          vx: (Math.random()*6-3),
-          vy: (Math.random()*-6-2),
-          g: 0.18 + Math.random()*0.10,
-          r: 2 + Math.random()*4,
-          a: 1,
-          rot: Math.random()*Math.PI,
-          vr: (Math.random()*0.2-0.1),
-          c: ["#ff4fa3","#ff86c6","#ffd2ea","#ff2b8a","#ff9bd1"][Math.floor(Math.random()*5)]
-        });
-      }
-
-      let t = 0;
-      if (confettiTimer) cancelAnimationFrame(confettiTimer);
-
-      const tick = () => {
-        t++;
-        ctx.clearRect(0,0,window.innerWidth, window.innerHeight);
-
-        for(const p of pieces){
-          p.x += p.vx;
-          p.y += p.vy;
-          p.vy += p.g;
-          p.rot += p.vr;
-          p.a *= 0.992;
-
-          ctx.save();
-          ctx.globalAlpha = Math.max(0, Math.min(1, p.a));
-          ctx.translate(p.x, p.y);
-          ctx.rotate(p.rot);
-          ctx.fillStyle = p.c;
-          ctx.fillRect(-p.r, -p.r, p.r*2.2, p.r*1.6);
-          ctx.restore();
-        }
-
-        if (t < 170){
-          confettiTimer = requestAnimationFrame(tick);
-        } else {
-          ctx.clearRect(0,0,window.innerWidth, window.innerHeight);
-        }
-      };
-      tick();
-    }
-
-    btnContinue.addEventListener("click", () => {
-      showPage(pageBoxes);
-      buildBoxes();
+function launchPixelConfetti() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  pieces = [];
+  for (let i = 0; i < 80; i++) {
+    pieces.push({
+      x: Math.random() * canvas.width,
+      y: -10,
+      size: (Math.random() > 0.5 ? 8 : 6),
+      color: colors[Math.floor(Math.random() * colors.length)],
+      vx: (Math.random() - 0.5) * 6,
+      vy: 2 + Math.random() * 5,
+      life: 1
     });
+  }
+  cancelAnimationFrame(animId);
+  drawConfetti();
+  setTimeout(() => { cancelAnimationFrame(animId); ctx.clearRect(0,0,canvas.width,canvas.height); }, 3500);
+}
 
-    btnResetTop.addEventListener("click", resetAll);
-
-    document.getElementById("btnClose").addEventListener("click", closeResult);
-    document.getElementById("btnOk").addEventListener("click", closeResult);
-    document.getElementById("btnAgain").addEventListener("click", resetAll);
-
-    overlay.addEventListener("click", (e) => { if (e.target === overlay) closeResult(); });
-
-    btnDemo.addEventListener("click", () => {
-      const card = pageIntro.querySelector(".card");
-      card.animate([
-        { transform: "translateX(0)" },
-        { transform: "translateX(-6px)" },
-        { transform: "translateX(6px)" },
-        { transform: "translateX(-4px)" },
-        { transform: "translateX(4px)" },
-        { transform: "translateX(0)" },
-      ], { duration: 420, easing: "ease-out" });
-    });
-  </script>
+function drawConfetti() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  let alive = false;
+  pieces.forEach(p => {
+    if (p.y > canvas.height + 20) return;
+    alive = true;
+    p.x += p.vx;
+    p.y += p.vy;
+    p.vy += 0.12;
+    ctx.globalAlpha = Math.max(0, p.life);
+    ctx.fillStyle = p.color;
+    // Pixel squares
+    ctx.fillRect(Math.round(p.x), Math.round(p.y), p.size, p.size);
+  });
+  ctx.globalAlpha = 1;
+  if (alive) animId = requestAnimationFrame(drawConfetti);
+}
+</script>
 </body>
 </html>
