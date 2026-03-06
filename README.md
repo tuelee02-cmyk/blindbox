@@ -820,7 +820,7 @@
 
 <script>
 const restaurants = [
-  { name: "CULTRA TAPROOM",   emoji: "🍺", msg: "CRAFT BEER QUEST!\nTAP ROOM VIBES UNLOCKED!" },
+  { name: "CULTRA TAPROOM",   emoji: "🍝", msg: "FUSION ITALIAN QUEST!\nCRAFT PASTA POWER UP!" },
   { name: "MEDITERRANEO",     emoji: "🫒", msg: "MED CUISINE AWAITS!\n+10 OLIVE OIL BONUS!" },
   { name: "PIZZA 4PS",        emoji: "🍕", msg: "PIZZA DUNGEON!\nFARM TO TABLE POWER UP!" },
   { name: "CHOPS BURGER",     emoji: "🍔", msg: "BURGER BOSS FIGHT!\nSTAMINA FULLY RESTORED!" }
