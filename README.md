@@ -154,7 +154,9 @@
 
   .pixel-sprite {
     image-rendering: pixelated;
-    animation: float 1.6s ease-in-out infinite;
+    animation: float 1.8s ease-in-out infinite;
+    display: block;
+    margin: 0 auto;
   }
 
   @keyframes float {
@@ -560,87 +562,162 @@
   <!-- Pixel character sprite (chef/guide) -->
   <div class="sprite-wrap">
     <!-- Pixel art guide character made with SVG -->
-    <svg class="pixel-sprite" width="80" height="96" viewBox="0 0 80 96" fill="none" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated">
-      <!-- Cat ears -->
-      <rect x="16" y="0"  width="12" height="12" fill="#f8b8d8"/>
-      <rect x="18" y="2"  width="8"  height="8"  fill="#f820a8"/>
-      <rect x="52" y="0"  width="12" height="12" fill="#f8b8d8"/>
-      <rect x="54" y="2"  width="8"  height="8"  fill="#f820a8"/>
-      <!-- Head -->
-      <rect x="14" y="10" width="52" height="36" fill="#fff0f8"/>
-      <!-- Pink hair top -->
-      <rect x="14" y="10" width="52" height="8"  fill="#f820a8"/>
-      <rect x="14" y="18" width="10" height="6"  fill="#f820a8"/>
-      <rect x="56" y="18" width="10" height="6"  fill="#f820a8"/>
-      <rect x="26" y="18" width="6"  height="4"  fill="#f820a8"/>
-      <rect x="48" y="18" width="6"  height="4"  fill="#f820a8"/>
-      <!-- Big shiny eyes -->
-      <rect x="20" y="26" width="16" height="12" fill="#e8e8f8"/>
-      <rect x="44" y="26" width="16" height="12" fill="#e8e8f8"/>
-      <rect x="22" y="28" width="12" height="8"  fill="#20c8f8"/>
-      <rect x="46" y="28" width="12" height="8"  fill="#20c8f8"/>
-      <rect x="25" y="29" width="7"  height="7"  fill="#101020"/>
-      <rect x="49" y="29" width="7"  height="7"  fill="#101020"/>
-      <!-- Eye shine -->
-      <rect x="25" y="29" width="3"  height="3"  fill="#ffffff"/>
-      <rect x="49" y="29" width="3"  height="3"  fill="#ffffff"/>
-      <rect x="29" y="33" width="2"  height="2"  fill="#ffffff"/>
-      <rect x="53" y="33" width="2"  height="2"  fill="#ffffff"/>
-      <!-- Eyelashes top -->
-      <rect x="20" y="24" width="4"  height="2"  fill="#101020"/>
-      <rect x="56" y="24" width="4"  height="2"  fill="#101020"/>
-      <!-- Cat nose -->
-      <rect x="37" y="36" width="6"  height="4"  fill="#f880a0"/>
-      <!-- Cat mouth W -->
-      <rect x="30" y="40" width="4"  height="2"  fill="#e06080"/>
-      <rect x="46" y="40" width="4"  height="2"  fill="#e06080"/>
-      <rect x="32" y="42" width="16" height="2"  fill="#e06080"/>
-      <!-- Blush -->
-      <rect x="14" y="34" width="10" height="6"  fill="#f8a0c0" opacity="0.75"/>
-      <rect x="56" y="34" width="10" height="6"  fill="#f8a0c0" opacity="0.75"/>
-      <!-- Whiskers -->
-      <rect x="2"  y="36" width="14" height="2"  fill="#d0b0c8"/>
-      <rect x="64" y="36" width="14" height="2"  fill="#d0b0c8"/>
-      <rect x="4"  y="32" width="12" height="2"  fill="#d0b0c8" opacity="0.8"/>
-      <rect x="64" y="32" width="12" height="2"  fill="#d0b0c8" opacity="0.8"/>
-      <!-- Body dress (pink) -->
-      <rect x="16" y="46" width="48" height="32" fill="#f820a8"/>
-      <rect x="12" y="48" width="56" height="6"  fill="#f820a8"/>
-      <!-- White collar -->
-      <rect x="28" y="46" width="24" height="6"  fill="#fff0f8"/>
-      <rect x="32" y="52" width="16" height="4"  fill="#fff0f8"/>
-      <!-- Yellow star on chest -->
-      <rect x="36" y="58" width="8"  height="8"  fill="#f8e800"/>
-      <rect x="34" y="60" width="12" height="4"  fill="#f8e800"/>
-      <!-- Sleeves/Arms -->
-      <rect x="2"  y="48" width="14" height="20" fill="#fff0f8"/>
-      <rect x="64" y="48" width="14" height="20" fill="#fff0f8"/>
-      <!-- Paws -->
-      <rect x="0"  y="66" width="16" height="8"  fill="#f8c0d8"/>
-      <rect x="64" y="66" width="16" height="8"  fill="#f8c0d8"/>
-      <rect x="0"  y="64" width="4"  height="4"  fill="#f8d8e8"/>
-      <rect x="6"  y="64" width="4"  height="4"  fill="#f8d8e8"/>
-      <rect x="12" y="64" width="4"  height="4"  fill="#f8d8e8"/>
-      <rect x="64" y="64" width="4"  height="4"  fill="#f8d8e8"/>
-      <rect x="70" y="64" width="4"  height="4"  fill="#f8d8e8"/>
-      <rect x="76" y="64" width="4"  height="4"  fill="#f8d8e8"/>
-      <!-- Legs -->
-      <rect x="20" y="78" width="16" height="14" fill="#f8c0d8"/>
-      <rect x="44" y="78" width="16" height="14" fill="#f8c0d8"/>
-      <!-- Shoes -->
-      <rect x="16" y="88" width="22" height="8"  fill="#f820a8"/>
-      <rect x="42" y="88" width="22" height="8"  fill="#f820a8"/>
-      <!-- Tail -->
-      <rect x="62" y="76" width="8"  height="4"  fill="#f8c0d8"/>
-      <rect x="68" y="80" width="8"  height="4"  fill="#f8c0d8"/>
-      <rect x="72" y="84" width="8"  height="4"  fill="#f8d8e8"/>
-      <rect x="74" y="88" width="6"  height="4"  fill="#f8d8e8"/>
+    <svg class="pixel-sprite" width="112" height="112" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated; width:112px; height:112px;">
+
+      <!-- HAIR BACK -->
+      <rect x="10" y="5"  width="3"  height="18" fill="#b01010"/>
+      <rect x="43" y="5"  width="3"  height="18" fill="#b01010"/>
+      <rect x="10" y="20" width="4"  height="5"  fill="#901000"/>
+      <rect x="42" y="20" width="4"  height="5"  fill="#901000"/>
+
+      <!-- HEAD -->
+      <rect x="13" y="6"  width="30" height="20" fill="#fdd9b5"/>
+      <rect x="11" y="8"  width="2"  height="16" fill="#fdd9b5"/>
+      <rect x="43" y="8"  width="2"  height="16" fill="#fdd9b5"/>
+
+      <!-- RED HAIR TOP -->
+      <rect x="11" y="2"  width="34" height="6"  fill="#cc1818"/>
+      <rect x="9"  y="4"  width="38" height="4"  fill="#cc1818"/>
+      <rect x="13" y="1"  width="30" height="2"  fill="#aa1010"/>
+      <!-- highlight -->
+      <rect x="19" y="2"  width="10" height="2"  fill="#e84040" opacity="0.7"/>
+
+      <!-- BANGS -->
+      <rect x="11" y="6"  width="34" height="5"  fill="#cc1818"/>
+      <rect x="11" y="11" width="5"  height="3"  fill="#cc1818"/>
+      <rect x="17" y="10" width="4"  height="3"  fill="#cc1818"/>
+      <rect x="35" y="10" width="4"  height="3"  fill="#cc1818"/>
+      <rect x="40" y="11" width="5"  height="3"  fill="#cc1818"/>
+      <!-- bob sides -->
+      <rect x="11" y="11" width="3"  height="10" fill="#cc1818"/>
+      <rect x="42" y="11" width="3"  height="10" fill="#cc1818"/>
+      <rect x="11" y="20" width="4"  height="4"  fill="#aa1010"/>
+      <rect x="41" y="20" width="4"  height="4"  fill="#aa1010"/>
+
+      <!-- YELLOW FLOWER CLIP -->
+      <rect x="37" y="4"  width="5"  height="5"  fill="#f8e000"/>
+      <rect x="35" y="6"  width="9"  height="3"  fill="#f8e000"/>
+      <rect x="39" y="3"  width="3"  height="7"  fill="#ffffa0"/>
+      <rect x="37" y="6"  width="5"  height="3"  fill="#f0a800"/>
+      <rect x="39" y="6"  width="2"  height="2"  fill="#ff8000"/>
+
+      <!-- LEFT EYE -->
+      <rect x="15" y="15" width="8"  height="6"  fill="#ffffff"/>
+      <rect x="16" y="16" width="6"  height="4"  fill="#4848d0"/>
+      <rect x="17" y="17" width="4"  height="3"  fill="#101028"/>
+      <rect x="17" y="17" width="2"  height="2"  fill="#ffffff"/>
+      <rect x="15" y="14" width="3"  height="2"  fill="#101028"/>
+      <rect x="20" y="14" width="2"  height="1"  fill="#101028"/>
+
+      <!-- RIGHT EYE -->
+      <rect x="33" y="15" width="8"  height="6"  fill="#ffffff"/>
+      <rect x="34" y="16" width="6"  height="4"  fill="#4848d0"/>
+      <rect x="35" y="17" width="4"  height="3"  fill="#101028"/>
+      <rect x="35" y="17" width="2"  height="2"  fill="#ffffff"/>
+      <rect x="34" y="14" width="2"  height="1"  fill="#101028"/>
+      <rect x="38" y="14" width="3"  height="2"  fill="#101028"/>
+
+      <!-- NOSE -->
+      <rect x="27" y="20" width="3"  height="1"  fill="#e8a878" opacity="0.9"/>
+
+      <!-- SMILE -->
+      <rect x="21" y="22" width="3"  height="1"  fill="#c06050"/>
+      <rect x="32" y="22" width="3"  height="1"  fill="#c06050"/>
+      <rect x="23" y="23" width="10" height="1"  fill="#c06050"/>
+      <rect x="25" y="22" width="6"  height="1"  fill="#efa090"/>
+
+      <!-- BLUSH -->
+      <rect x="12" y="19" width="5"  height="3"  fill="#ffb0a0" opacity="0.55"/>
+      <rect x="39" y="19" width="5"  height="3"  fill="#ffb0a0" opacity="0.55"/>
+
+      <!-- NECK -->
+      <rect x="23" y="26" width="10" height="3"  fill="#fdd9b5"/>
+
+      <!-- WHITE DRESS BODY -->
+      <rect x="14" y="29" width="28" height="16" fill="#f4f4ff"/>
+      <rect x="10" y="32" width="36" height="13" fill="#f4f4ff"/>
+      <!-- dress flare -->
+      <rect x="7"  y="43" width="42" height="5"  fill="#f0f0ff"/>
+      <rect x="5"  y="46" width="46" height="3"  fill="#ebebff"/>
+      <!-- lace hem -->
+      <rect x="5"  y="48" width="46" height="2"  fill="#dcdcff"/>
+      <rect x="7"  y="50" width="4"  height="2"  fill="#dcdcff"/>
+      <rect x="14" y="50" width="4"  height="2"  fill="#dcdcff"/>
+      <rect x="21" y="50" width="4"  height="2"  fill="#dcdcff"/>
+      <rect x="28" y="50" width="4"  height="2"  fill="#dcdcff"/>
+      <rect x="35" y="50" width="4"  height="2"  fill="#dcdcff"/>
+      <rect x="42" y="50" width="4"  height="2"  fill="#dcdcff"/>
+      <!-- collar -->
+      <rect x="20" y="28" width="16" height="3"  fill="#ffffff"/>
+      <rect x="18" y="29" width="20" height="2"  fill="#e8e8ff"/>
+      <!-- pink ribbon -->
+      <rect x="16" y="37" width="24" height="4"  fill="#f060b0"/>
+      <rect x="24" y="34" width="8"  height="8"  fill="#f060b0"/>
+      <rect x="26" y="35" width="4"  height="4"  fill="#ff90d0"/>
+
+      <!-- LEFT SLEEVE (normal arm down) -->
+      <rect x="8"  y="29" width="6"  height="9"  fill="#f4f4ff"/>
+      <rect x="7"  y="36" width="8"  height="2"  fill="#dcdcff"/>
+      <!-- left arm (skin) -->
+      <rect x="8"  y="38" width="6"  height="8"  fill="#fdd9b5"/>
+      <!-- left hand normal -->
+      <rect x="8"  y="45" width="6"  height="4"  fill="#fdd9b5"/>
+      <rect x="8"  y="44" width="2"  height="2"  fill="#fdd9b5"/>
+      <rect x="11" y="44" width="2"  height="2"  fill="#fdd9b5"/>
+
+      <!-- RIGHT ARM RAISED (doing finger heart) -->
+      <!-- upper arm going up -->
+      <rect x="42" y="22" width="6"  height="10" fill="#fdd9b5"/>
+      <!-- white sleeve on upper arm -->
+      <rect x="42" y="29" width="6"  height="6"  fill="#f4f4ff"/>
+      <rect x="42" y="34" width="6"  height="2"  fill="#dcdcff"/>
+      <!-- forearm angled up-right -->
+      <rect x="44" y="10" width="5"  height="14" fill="#fdd9b5"/>
+      <!-- FINGER HEART HAND -->
+      <!-- palm -->
+      <rect x="44" y="4"  width="8"  height="8"  fill="#fdd9b5"/>
+      <!-- index finger up-left -->
+      <rect x="44" y="0"  width="3"  height="6"  fill="#fdd9b5"/>
+      <!-- thumb up-right crossing -->
+      <rect x="49" y="1"  width="3"  height="5"  fill="#fdd9b5"/>
+      <!-- heart shape where tips cross -->
+      <rect x="45" y="0"  width="2"  height="2"  fill="#ff3060"/>
+      <rect x="49" y="0"  width="2"  height="2"  fill="#ff3060"/>
+      <rect x="44" y="1"  width="8"  height="2"  fill="#ff3060"/>
+      <rect x="45" y="3"  width="6"  height="2"  fill="#ff3060"/>
+      <rect x="46" y="5"  width="4"  height="1"  fill="#ff3060"/>
+      <rect x="47" y="6"  width="2"  height="1"  fill="#ff3060"/>
+      <!-- heart shine -->
+      <rect x="45" y="1"  width="2"  height="1"  fill="#ff90b0"/>
+
+      <!-- LEGS -->
+      <rect x="18" y="51" width="8"  height="5"  fill="#fdd9b5"/>
+      <rect x="30" y="51" width="8"  height="5"  fill="#fdd9b5"/>
+
+      <!-- SHOES -->
+      <rect x="15" y="54" width="13" height="4"  fill="#5a1e00"/>
+      <rect x="28" y="54" width="13" height="4"  fill="#5a1e00"/>
+      <rect x="18" y="52" width="7"  height="2"  fill="#5a1e00"/>
+      <rect x="31" y="52" width="7"  height="2"  fill="#5a1e00"/>
+      <rect x="16" y="54" width="4"  height="2"  fill="#8b4020" opacity="0.6"/>
+      <rect x="29" y="54" width="4"  height="2"  fill="#8b4020" opacity="0.6"/>
+
+      <!-- SPARKLES -->
+      <rect x="1"  y="8"  width="3"  height="3"  fill="#f8e800"/>
+      <rect x="0"  y="9"  width="5"  height="1"  fill="#f8e800"/>
+      <rect x="1"  y="36" width="3"  height="3"  fill="#a0f820"/>
+      <rect x="0"  y="37" width="5"  height="1"  fill="#a0f820"/>
+      <!-- extra sparkle near heart -->
+      <rect x="39" y="2"  width="3"  height="3"  fill="#f820a8"/>
+      <rect x="38" y="3"  width="5"  height="1"  fill="#f820a8"/>
+      <rect x="34" y="0"  width="2"  height="2"  fill="#f8e800"/>
+      <rect x="33" y="1"  width="4"  height="1"  fill="#f8e800"/>
     </svg>
   </div>
 
   <div class="pixel-panel">
     <div class="title-bar">
-      <span class="title-bar-text">GUIDE NEKO</span>
+      <span class="title-bar-text">GUIDE ANGIE</span>
       <div class="title-bar-dots">
         <div class="dot r"></div>
         <div class="dot y"></div>
@@ -649,7 +726,7 @@
     </div>
 
     <div class="dialogue-box">
-      <div class="dialogue-name">▶ NEKO:</div>
+      <div class="dialogue-name">▶ ANGIE:</div>
       <div class="dialogue-text" id="introText"></div>
     </div>
 
@@ -743,10 +820,10 @@
 
 <script>
 const restaurants = [
-  { name: "OTTUGI",     emoji: "🍱", msg: "KOREAN CUISINE AWAITS!\nANH DUONG'S STATS +10 JOY!" },
-  { name: "CHOSIM",     emoji: "🥩", msg: "GRILL MASTER QUEST!\nPREPARE THE CHOPSTICKS!" },
-  { name: "HANOI TACO BAR", emoji: "🌮", msg: "TACO QUEST UNLOCKED!\nVIETNAM X MEXICO FUSION!" },
-  { name: "SUMO BBQ",   emoji: "🥓", msg: "LEGENDARY BBQ BUFFET!\nFINAL BOSS: FULL STOMACH!" }
+  { name: "CULTRA TAPROOM",   emoji: "🍺", msg: "CRAFT BEER QUEST!\nTAP ROOM VIBES UNLOCKED!" },
+  { name: "MEDITERRANEO",     emoji: "🫒", msg: "MED CUISINE AWAITS!\n+10 OLIVE OIL BONUS!" },
+  { name: "PIZZA 4PS",        emoji: "🍕", msg: "PIZZA DUNGEON!\nFARM TO TABLE POWER UP!" },
+  { name: "CHOPS BURGER",     emoji: "🍔", msg: "BURGER BOSS FIGHT!\nSTAMINA FULLY RESTORED!" }
 ];
 
 let shuffled = [];
@@ -788,7 +865,7 @@ function typewrite(el, text, speed, cb) {
 // Intro typewriter
 window.addEventListener('load', () => {
   const el = document.getElementById('introText');
-  const msg = 'Hi anh Duong,\nyou have a mission\nto do...\n\nChoose a mystery\nbox to reveal\nyour restaurant!';
+  const msg = 'Could you do a\nfavor by letting\nyour intuition\nguide?\n\nMoa moa ~';
   typewrite(el, msg, 42, () => {
     document.getElementById('continueBtn').style.display = 'block';
     document.getElementById('pressStart').style.display = 'none';
@@ -878,7 +955,7 @@ function resetGame() {
   const el = document.getElementById('introText');
   document.getElementById('continueBtn').style.display = 'none';
   document.getElementById('pressStart').style.display = 'none';
-  const msg = 'Hi anh Duong,\nyou have a mission\nto do...\n\nChoose a mystery\nbox to reveal\nyour restaurant!';
+  const msg = 'Could you do a\nfavor by letting\nyour intuition\nguide?\n\nMoa moa ~';
   typewrite(el, msg, 42, () => {
     document.getElementById('continueBtn').style.display = 'block';
   });
