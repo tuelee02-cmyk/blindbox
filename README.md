@@ -3,1006 +3,428 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>MISSION: FOOD ▶</title>
+<title>CASE FILE: CLASSIFIED</title>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg:       #0a0a1a;
-    --bg2:      #12122a;
-    --panel:    #1a1a3e;
-    --border:   #5858f8;
-    --border2:  #a0a0ff;
-    --yellow:   #f8e800;
-    --red:      #e82020;
-    --green:    #20e840;
-    --cyan:     #20e8f8;
-    --white:    #e8e8f8;
-    --shadow:   #000080;
-    --pink:     #f820a8;
-    --orange:   #f89820;
-    --pixel: 4px;
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    font-family: 'Press Start 2P', monospace;
-    background-color: var(--bg);
-    min-height: 100vh;
-    overflow-x: hidden;
-    position: relative;
-    cursor: default;
-    image-rendering: pixelated;
-  }
-
-  /* Scanline effect */
-  body::after {
-    content: '';
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 3px,
-      rgba(0,0,0,0.08) 3px,
-      rgba(0,0,0,0.08) 4px
-    );
-    pointer-events: none;
-    z-index: 9999;
-  }
-
-  /* Star field bg */
-  .starfield {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    z-index: 0;
-    overflow: hidden;
-  }
-
-  .star {
-    position: absolute;
-    width: 3px; height: 3px;
-    background: white;
-    animation: twinkle linear infinite;
-    image-rendering: pixelated;
-  }
-
-  @keyframes twinkle {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.1; }
-  }
-
-  /* Pages */
-  .page {
-    display: none;
-    position: relative;
-    z-index: 10;
-    min-height: 100vh;
-    padding: 24px 16px 48px;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-  .page.active { display: flex; }
-
-  /* ---- PIXEL PANEL ---- */
-  .pixel-panel {
-    background: var(--panel);
-    border: var(--pixel) solid var(--border);
-    box-shadow:
-      0 0 0 var(--pixel) var(--shadow),
-      inset 0 0 0 var(--pixel) rgba(255,255,255,0.04),
-      0 0 40px rgba(88,88,248,0.25);
-    padding: 24px 20px;
-    width: 100%;
-    max-width: 360px;
-    position: relative;
-  }
-
-  /* Corner decorations */
-  .pixel-panel::before,
-  .pixel-panel::after {
-    content: '■';
-    position: absolute;
-    color: var(--border2);
-    font-size: 10px;
-    line-height: 1;
-  }
-  .pixel-panel::before { top: 6px; left: 8px; }
-  .pixel-panel::after  { bottom: 6px; right: 8px; }
-
-  /* ---- TITLE BAR ---- */
-  .title-bar {
-    background: var(--border);
-    margin: -24px -20px 20px;
-    padding: 10px 14px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: var(--pixel) solid var(--border2);
-  }
-
-  .title-bar-text {
-    color: var(--yellow);
-    font-size: 8px;
-    letter-spacing: 1px;
-    text-shadow: 2px 2px 0 #000;
-  }
-
-  .title-bar-dots {
-    display: flex;
-    gap: 5px;
-  }
-
-  .dot {
-    width: 10px; height: 10px;
-    border: 2px solid rgba(255,255,255,0.3);
-  }
-  .dot.r { background: var(--red); }
-  .dot.y { background: var(--yellow); }
-  .dot.g { background: var(--green); }
-
-  /* ---- SPRITE ---- */
-  .sprite-wrap {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 20px;
-    position: relative;
-  }
-
-  .pixel-sprite {
-    image-rendering: pixelated;
-    animation: float 1.8s ease-in-out infinite;
-    display: block;
-    margin: 0 auto;
-  }
-
-  @keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-8px); }
-  }
-
-  /* ---- DIALOGUE BOX ---- */
-  .dialogue-box {
-    background: #08081c;
-    border: var(--pixel) solid var(--border2);
-    padding: 16px;
-    margin-bottom: 20px;
-    position: relative;
-    min-height: 80px;
-  }
-
-  .dialogue-box::before {
-    content: '▼';
-    position: absolute;
-    bottom: 6px;
-    right: 10px;
-    color: var(--white);
-    font-size: 8px;
-    animation: blink 0.8s step-end infinite;
-  }
-
-  @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
-  }
-
-  .dialogue-name {
-    color: var(--yellow);
-    font-size: 7px;
-    margin-bottom: 10px;
-    text-shadow: 1px 1px 0 #000;
-  }
-
-  .dialogue-text {
-    color: var(--white);
-    font-size: 8px;
-    line-height: 2;
-    text-shadow: 1px 1px 0 #000;
-  }
-
-  /* Typewriter */
-  .typewriter {
-    display: inline;
-    border-right: 2px solid var(--white);
-    animation: cursorBlink 0.7s step-end infinite;
-    white-space: pre-wrap;
-    word-break: break-word;
-  }
-
-  @keyframes cursorBlink {
-    0%, 100% { border-color: var(--white); }
-    50% { border-color: transparent; }
-  }
-
-  /* ---- PIXEL BUTTON ---- */
-  .pixel-btn {
-    font-family: 'Press Start 2P', monospace;
-    font-size: 9px;
-    background: var(--yellow);
-    color: #000;
-    border: none;
-    padding: 14px 20px;
-    cursor: pointer;
-    width: 100%;
-    text-align: center;
-    letter-spacing: 1px;
-    box-shadow: 4px 4px 0 #000, -2px -2px 0 rgba(255,255,255,0.3) inset;
-    transition: transform 0.08s, box-shadow 0.08s;
-    image-rendering: pixelated;
-    display: block;
-    text-decoration: none;
-  }
-
-  .pixel-btn:hover {
-    background: var(--orange);
-    transform: translate(-2px, -2px);
-    box-shadow: 6px 6px 0 #000, -2px -2px 0 rgba(255,255,255,0.3) inset;
-  }
-
-  .pixel-btn:active {
-    transform: translate(2px, 2px);
-    box-shadow: 2px 2px 0 #000;
-  }
-
-  .pixel-btn.cyan {
-    background: var(--cyan);
-  }
-  .pixel-btn.cyan:hover { background: #40ffff; }
-
-  .pixel-btn.green {
-    background: var(--green);
-  }
-
-  /* ---- HEADER ---- */
-  .game-header {
-    text-align: center;
-    margin-bottom: 20px;
-    color: var(--yellow);
-    font-size: 10px;
-    text-shadow: 3px 3px 0 #000, 0 0 20px rgba(248,232,0,0.5);
-    letter-spacing: 2px;
-    animation: headerGlow 2s ease-in-out infinite;
-  }
-
-  @keyframes headerGlow {
-    0%, 100% { text-shadow: 3px 3px 0 #000, 0 0 10px rgba(248,232,0,0.3); }
-    50% { text-shadow: 3px 3px 0 #000, 0 0 25px rgba(248,232,0,0.8), 0 0 40px rgba(248,232,0,0.4); }
-  }
-
-  .sub-header {
-    text-align: center;
-    color: var(--cyan);
-    font-size: 7px;
-    margin-bottom: 4px;
-    letter-spacing: 1px;
-  }
-
-  .lives-row {
-    text-align: center;
-    font-size: 11px;
-    margin-bottom: 16px;
-    color: var(--red);
-  }
-
-  /* ---- BOXES GRID ---- */
-  .boxes-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    width: 100%;
-    max-width: 360px;
-    margin-bottom: 16px;
-  }
-
-  .gift-box {
-    background: var(--panel);
-    border: var(--pixel) solid var(--border);
-    padding: 18px 10px 14px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: transform 0.08s, box-shadow 0.08s, border-color 0.1s;
-    box-shadow: 4px 4px 0 #000;
-    min-height: 120px;
-    position: relative;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  .gift-box:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: 6px 6px 0 #000;
-    border-color: var(--yellow);
-  }
-
-  .gift-box:active {
-    transform: translate(2px, 2px);
-    box-shadow: 2px 2px 0 #000;
-  }
-
-  .gift-box.opened {
-    cursor: default;
-    border-color: var(--green);
-    box-shadow: 4px 4px 0 #000, 0 0 16px rgba(32,232,64,0.3);
-    pointer-events: none;
-  }
-
-  .gift-box.shake {
-    animation: pixelShake 0.35s steps(2) forwards;
-  }
-
-  @keyframes pixelShake {
-    0%   { transform: translate(0,0); }
-    20%  { transform: translate(-4px, 0); }
-    40%  { transform: translate(4px, -4px); }
-    60%  { transform: translate(-4px, 4px); }
-    80%  { transform: translate(4px, 0); }
-    100% { transform: translate(0, 0); }
-  }
-
-  .box-num {
-    position: absolute;
-    top: 5px; right: 7px;
-    color: var(--border2);
-    font-size: 6px;
-  }
-
-  .box-icon {
-    font-size: 36px;
-    margin-bottom: 8px;
-    image-rendering: pixelated;
-    display: block;
-  }
-
-  .box-label {
-    color: var(--border2);
-    font-size: 6px;
-    text-align: center;
-    line-height: 1.8;
-  }
-
-  .box-reveal {
-    color: var(--green);
-    font-size: 7px;
-    text-align: center;
-    line-height: 1.8;
-    text-shadow: 0 0 8px rgba(32,232,64,0.8);
-  }
-
-  .box-reveal-icon {
-    font-size: 28px;
-    margin-bottom: 6px;
-    animation: popIn 0.2s steps(3) forwards;
-  }
-
-  @keyframes popIn {
-    0%   { transform: scale(0); }
-    60%  { transform: scale(1.3); }
-    100% { transform: scale(1); }
-  }
-
-  /* ---- RESULT ---- */
-  .result-header {
-    text-align: center;
-    color: var(--yellow);
-    font-size: 9px;
-    letter-spacing: 2px;
-    margin-bottom: 16px;
-    text-shadow: 3px 3px 0 #000;
-    animation: headerGlow 1.5s ease-in-out infinite;
-  }
-
-  .result-score {
-    text-align: center;
-    color: var(--cyan);
-    font-size: 7px;
-    margin-bottom: 20px;
-    letter-spacing: 1px;
-  }
-
-  .result-icon {
-    font-size: 56px;
-    display: block;
-    text-align: center;
-    margin-bottom: 12px;
-    animation: popIn 0.3s steps(3) forwards;
-  }
-
-  .result-name {
-    color: var(--yellow);
-    font-size: 13px;
-    text-align: center;
-    margin-bottom: 10px;
-    text-shadow: 3px 3px 0 #000, 0 0 20px rgba(248,232,0,0.6);
-    letter-spacing: 2px;
-  }
-
-  .result-msg {
-    color: var(--white);
-    font-size: 7px;
-    text-align: center;
-    line-height: 2.2;
-    margin-bottom: 24px;
-  }
-
-  .hp-bar-wrap {
-    margin-bottom: 20px;
-  }
-
-  .hp-label {
-    color: var(--white);
-    font-size: 6px;
-    margin-bottom: 6px;
-    letter-spacing: 1px;
-  }
-
-  .hp-bar {
-    height: 14px;
-    background: #0a0a1a;
-    border: 3px solid var(--border2);
-    overflow: hidden;
-  }
-
-  .hp-fill {
-    height: 100%;
-    background: var(--green);
-    width: 0%;
-    animation: fillBar 1s steps(20) 0.3s forwards;
-    box-shadow: inset 0 3px 0 rgba(255,255,255,0.3);
-  }
-
-  @keyframes fillBar {
-    to { width: 100%; }
-  }
-
-  /* ---- PIXEL CONFETTI ---- */
-  #confetti-canvas {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    pointer-events: none;
-    z-index: 500;
-    image-rendering: pixelated;
-  }
-
-  /* Blinking SELECT */
-  .press-start {
-    text-align: center;
-    color: var(--white);
-    font-size: 7px;
-    letter-spacing: 2px;
-    animation: blink 1s step-end infinite;
-    margin-top: 12px;
-  }
-
-  /* Scrolling marquee top bar */
-  .top-bar {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    background: var(--border);
-    padding: 5px 0;
-    z-index: 100;
-    overflow: hidden;
-  }
-
-  .marquee-text {
-    color: var(--yellow);
-    font-size: 6px;
-    white-space: nowrap;
-    display: inline-block;
-    animation: marquee 14s linear infinite;
-    letter-spacing: 2px;
-  }
-
-  @keyframes marquee {
-    0%   { transform: translateX(100vw); }
-    100% { transform: translateX(-100%); }
-  }
-
-  /* Pixel divider */
-  .pixel-divider {
-    height: var(--pixel);
-    background: repeating-linear-gradient(90deg, var(--border2) 0, var(--border2) 8px, transparent 8px, transparent 12px);
-    margin: 16px 0;
-  }
-
-  .mt16 { margin-top: 16px; }
-
-  @keyframes screenFlash {
-    0% { opacity: 0; }
-    30% { opacity: 1; }
-    100% { opacity: 0; }
-  }
-
-  .flash-overlay {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: white;
-    z-index: 998;
-    pointer-events: none;
-    opacity: 0;
-  }
-
-  .flash-overlay.active {
-    animation: screenFlash 0.4s ease-out forwards;
-  }
+:root{
+  --bg:#0d0d0a;--panel:#1a1a14;--border:#8a7a3a;--border2:#c8b060;
+  --amber:#e8a020;--yellow:#d4a820;--red:#c02020;--green:#40a040;
+  --cream:#c8c090;--stamp:#8b1a1a;--paper:#1e1c12;--folder:#6a4e22;--pixel:4px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Press Start 2P',monospace;background-color:var(--bg);min-height:100vh;overflow-x:hidden;position:relative;cursor:default;image-rendering:pixelated;}
+body::after{content:'';position:fixed;top:0;left:0;width:100%;height:100%;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.13) 2px,rgba(0,0,0,0.13) 3px);pointer-events:none;z-index:9999;}
+.dust{position:fixed;width:2px;height:2px;background:#c8a030;opacity:0;pointer-events:none;z-index:2;animation:dustFloat linear infinite;}
+@keyframes dustFloat{0%{transform:translateY(105vh);opacity:0}8%{opacity:0.4}92%{opacity:0.15}100%{transform:translateY(-5vh) translateX(12px);opacity:0}}
+.page{display:none;position:relative;z-index:10;min-height:100vh;padding:24px 16px 52px;flex-direction:column;align-items:center;justify-content:center;}
+.page.active{display:flex;}
+.pixel-panel{background:var(--paper);border:var(--pixel) solid var(--border);box-shadow:0 0 0 var(--pixel) #000,5px 5px 0 #000,0 0 24px rgba(200,160,40,0.08);padding:24px 20px;width:100%;max-width:360px;position:relative;}
+.pixel-panel::before{content:'&#9642;';position:absolute;top:6px;left:8px;color:var(--border2);font-size:8px;}
+.pixel-panel::after{content:'&#9642;';position:absolute;bottom:6px;right:8px;color:var(--border2);font-size:8px;}
+.title-bar{background:var(--folder);margin:-24px -20px 20px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:var(--pixel) solid var(--border2);}
+.title-bar-text{color:var(--cream);font-size:6px;letter-spacing:1px;text-shadow:1px 1px 0 #000;}
+.title-bar-dots{display:flex;gap:5px;}
+.dot{width:10px;height:10px;border:2px solid rgba(0,0,0,0.5);}
+.dot.r{background:#6a1010;}.dot.y{background:var(--yellow);}.dot.g{background:var(--green);}
+.sprite-wrap{display:flex;justify-content:center;margin-bottom:8px;}
+.pixel-sprite{image-rendering:pixelated;animation:sway 3s ease-in-out infinite;display:block;margin:0 auto;filter:drop-shadow(0 4px 14px rgba(200,160,32,0.3));}
+@keyframes sway{0%,100%{transform:translateY(0px)}50%{transform:translateY(-6px)}}
+.dialogue-box{background:#0a0a06;border:var(--pixel) solid var(--border);padding:14px;margin-bottom:18px;position:relative;min-height:86px;}
+.dialogue-box::before{content:'&#9660;';position:absolute;bottom:6px;right:10px;color:var(--amber);font-size:7px;animation:blink 0.9s step-end infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.dialogue-name{color:var(--amber);font-size:6px;margin-bottom:10px;letter-spacing:1px;}
+.dialogue-text{color:var(--cream);font-size:7px;line-height:2.2;}
+.typewriter{display:inline;border-right:2px solid var(--amber);animation:cur 0.7s step-end infinite;white-space:pre-wrap;word-break:break-word;}
+@keyframes cur{0%,100%{border-color:var(--amber)}50%{border-color:transparent}}
+.pixel-btn{font-family:'Press Start 2P',monospace;font-size:7px;background:var(--folder);color:var(--cream);border:none;padding:14px 20px;cursor:pointer;width:100%;text-align:center;letter-spacing:1px;box-shadow:4px 4px 0 #000;transition:transform 0.08s,box-shadow 0.08s;display:block;}
+.pixel-btn:hover{background:#8a6830;transform:translate(-2px,-2px);box-shadow:6px 6px 0 #000;}
+.pixel-btn:active{transform:translate(2px,2px);box-shadow:2px 2px 0 #000;}
+.pixel-btn.red-btn{background:var(--stamp);color:#ffcccc;}
+.pixel-btn.red-btn:hover{background:#a02020;}
+.game-header{text-align:center;margin-bottom:6px;color:var(--amber);font-size:8px;text-shadow:2px 2px 0 #000,0 0 14px rgba(232,160,32,0.4);letter-spacing:2px;animation:flicker 5s ease-in-out infinite;}
+@keyframes flicker{0%,93%,96%,99%,100%{opacity:1}94%,97%{opacity:0.3}}
+.sub-header{text-align:center;color:var(--cream);font-size:6px;margin-bottom:6px;letter-spacing:2px;opacity:0.6;}
+.stamp{display:inline-block;border:3px solid var(--stamp);color:var(--stamp);font-size:7px;padding:4px 10px;letter-spacing:3px;transform:rotate(-7deg);box-shadow:2px 2px 0 rgba(139,26,26,0.3);margin-bottom:12px;animation:sp 3.5s ease-in-out infinite;}
+@keyframes sp{0%,100%{opacity:1}50%{opacity:0.65}}
+.case-badge{text-align:center;color:var(--border2);font-size:5px;letter-spacing:2px;margin-bottom:10px;opacity:0.55;}
+.boxes-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;max-width:360px;margin-bottom:14px;}
+.gift-box{background:var(--paper);border:var(--pixel) solid var(--border);padding:16px 10px 14px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:transform 0.08s,box-shadow 0.08s;box-shadow:4px 4px 0 #000;min-height:120px;position:relative;-webkit-tap-highlight-color:transparent;overflow:hidden;}
+.gift-box::before{content:'';position:absolute;top:0;left:0;right:0;height:5px;background:var(--folder);}
+.gift-box:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 #000;border-color:var(--amber);}
+.gift-box:active{transform:translate(2px,2px);box-shadow:2px 2px 0 #000;}
+.gift-box.opened{cursor:default;border-color:var(--red);pointer-events:none;}
+.gift-box.opened::before{background:var(--stamp);}
+.gift-box.shake{animation:shk 0.3s steps(2) forwards;}
+@keyframes shk{0%{transform:translate(0,0)}25%{transform:translate(-4px,0)}50%{transform:translate(4px,-3px)}75%{transform:translate(-3px,3px)}100%{transform:translate(0,0)}}
+.box-num{position:absolute;top:8px;right:8px;color:var(--border2);font-size:5px;letter-spacing:1px;}
+.box-icon{font-size:30px;margin-bottom:8px;display:block;filter:sepia(0.7) brightness(0.8);}
+.box-label{color:var(--cream);font-size:5px;text-align:center;line-height:2;opacity:0.7;}
+.box-reveal{color:var(--amber);font-size:5px;text-align:center;line-height:1.9;text-shadow:0 0 6px rgba(232,160,32,0.6);}
+.box-reveal-icon{font-size:24px;margin-bottom:6px;animation:pop 0.2s steps(3) forwards;}
+@keyframes pop{0%{transform:scale(0)}60%{transform:scale(1.2)}100%{transform:scale(1)}}
+.result-header{text-align:center;color:var(--amber);font-size:8px;letter-spacing:2px;margin-bottom:12px;text-shadow:2px 2px 0 #000;animation:flicker 3s ease-in-out infinite;}
+.result-score{text-align:center;color:var(--cream);font-size:5px;margin-bottom:16px;letter-spacing:1px;opacity:0.65;}
+.result-icon{font-size:46px;display:block;text-align:center;margin-bottom:10px;animation:pop 0.3s steps(3) forwards;filter:sepia(0.4);}
+.result-name{color:var(--amber);font-size:10px;text-align:center;margin-bottom:8px;text-shadow:2px 2px 0 #000,0 0 14px rgba(212,168,32,0.5);letter-spacing:2px;line-height:1.7;}
+.result-msg{color:var(--cream);font-size:6px;text-align:center;line-height:2.4;margin-bottom:18px;opacity:0.85;}
+.bar-wrap{margin-bottom:16px;}
+.bar-label{color:var(--cream);font-size:5px;margin-bottom:6px;letter-spacing:1px;opacity:0.7;}
+.bar{height:12px;background:#080806;border:3px solid var(--border);overflow:hidden;}
+.bar-fill{height:100%;background:var(--amber);width:0%;animation:fill 1.2s steps(18) 0.3s forwards;box-shadow:inset 0 2px 0 rgba(255,255,255,0.15);}
+@keyframes fill{to{width:100%;}}
+.divider{height:var(--pixel);background:repeating-linear-gradient(90deg,var(--border) 0,var(--border) 6px,transparent 6px,transparent 10px);margin:14px 0;}
+.top-bar{position:fixed;top:0;left:0;right:0;background:#120e02;border-bottom:2px solid var(--border);padding:5px 0;z-index:100;overflow:hidden;}
+.mq{color:var(--amber);font-size:5px;white-space:nowrap;display:inline-block;animation:mq 22s linear infinite;letter-spacing:2px;opacity:0.75;}
+@keyframes mq{0%{transform:translateX(100vw)}100%{transform:translateX(-100%)}}
+.mt16{margin-top:16px;}
+@keyframes flash{0%{opacity:0}20%{opacity:0.55}100%{opacity:0}}
+.flash{position:fixed;top:0;left:0;width:100%;height:100%;background:#c8a020;z-index:998;pointer-events:none;opacity:0;}
+.flash.go{animation:flash 0.35s ease-out forwards;}
+#cc{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:500;image-rendering:pixelated;}
+.room{position:fixed;bottom:0;left:0;right:0;z-index:1;pointer-events:none;}
 </style>
 </head>
 <body>
 
-<!-- Top scrolling bar -->
 <div class="top-bar">
-  <span class="marquee-text">★ MISSION: FOOD ★ PLAYER: ANH DUONG ★ OBJECTIVE: CHOOSE A RESTAURANT ★ GOOD LUCK! ★ MISSION: FOOD ★</span>
+  <span class="mq">&#9632; CLASSIFIED &#9632; CASE #4471-B &#9632; AUTHORIZED EYES ONLY &#9632; AGENT: ANH DUONG &#9632; CLEARANCE LEVEL 5 &#9632; NO COPIES PERMITTED &#9632;</span>
 </div>
 
-<!-- Starfield -->
-<div class="starfield" id="starfield"></div>
+<!-- pixel office room -->
+<svg class="room" viewBox="0 0 375 160" preserveAspectRatio="xMidYMax meet" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated;height:160px;">
+  <rect x="0" y="118" width="375" height="42" fill="#0e0d07"/>
+  <rect x="0" y="118" width="375" height="2" fill="#1c1a0e"/>
+  <rect x="70" y="118" width="2" height="42" fill="#131108"/>
+  <rect x="155" y="118" width="2" height="42" fill="#131108"/>
+  <rect x="230" y="118" width="2" height="42" fill="#131108"/>
+  <rect x="310" y="118" width="2" height="42" fill="#131108"/>
+  <!-- left desk -->
+  <rect x="0" y="90" width="90" height="30" fill="#28200a"/>
+  <rect x="0" y="86" width="90" height="6" fill="#38300e"/>
+  <rect x="6" y="118" width="14" height="42" fill="#1a1408"/>
+  <rect x="68" y="118" width="14" height="42" fill="#1a1408"/>
+  <!-- folders left -->
+  <rect x="8" y="76" width="18" height="14" fill="#6a4e22"/><rect x="8" y="74" width="18" height="4" fill="#8a6830"/>
+  <rect x="28" y="78" width="16" height="12" fill="#5a3e18"/><rect x="28" y="76" width="16" height="4" fill="#7a5828"/>
+  <rect x="46" y="76" width="18" height="14" fill="#7a1818"/><rect x="46" y="74" width="18" height="4" fill="#9a2828"/>
+  <!-- lamp left -->
+  <rect x="62" y="68" width="4" height="20" fill="#383018"/>
+  <rect x="54" y="62" width="20" height="7" fill="#c09828" opacity="0.9"/>
+  <rect x="50" y="68" width="28" height="4" fill="#d0b040" opacity="0.5"/>
+  <!-- right desk -->
+  <rect x="285" y="90" width="90" height="30" fill="#28200a"/>
+  <rect x="285" y="86" width="90" height="6" fill="#38300e"/>
+  <rect x="291" y="118" width="14" height="42" fill="#1a1408"/>
+  <rect x="358" y="118" width="14" height="42" fill="#1a1408"/>
+  <!-- folders right -->
+  <rect x="293" y="76" width="18" height="14" fill="#6a4e22"/><rect x="293" y="74" width="18" height="4" fill="#8a6830"/>
+  <rect x="313" y="78" width="16" height="12" fill="#7a1818"/><rect x="313" y="76" width="16" height="4" fill="#9a2828"/>
+  <rect x="331" y="76" width="18" height="14" fill="#5a3e18"/><rect x="331" y="74" width="18" height="4" fill="#7a5828"/>
+  <!-- cork board center -->
+  <rect x="112" y="0" width="152" height="84" fill="#382a14"/>
+  <rect x="110" y="0" width="156" height="5" fill="#5a4222"/>
+  <rect x="110" y="79" width="156" height="5" fill="#5a4222"/>
+  <!-- pinned notes -->
+  <rect x="120" y="8" width="32" height="22" fill="#c0b882" opacity="0.85" transform="rotate(-2 120 8)"/>
+  <rect x="132" y="6" width="4" height="4" fill="#b02020" opacity="0.9"/>
+  <rect x="160" y="10" width="28" height="20" fill="#b8b07a" opacity="0.8" transform="rotate(3 160 10)"/>
+  <rect x="170" y="8" width="4" height="4" fill="#b02020" opacity="0.9"/>
+  <rect x="196" y="6" width="30" height="20" fill="#c0b882" opacity="0.75" transform="rotate(-3 196 6)"/>
+  <rect x="208" y="4" width="4" height="4" fill="#4040a0" opacity="0.9"/>
+  <rect x="122" y="38" width="24" height="34" fill="#b8b07a" opacity="0.7" transform="rotate(-2 122 38)"/>
+  <rect x="130" y="36" width="4" height="4" fill="#b02020" opacity="0.9"/>
+  <rect x="194" y="38" width="32" height="24" fill="#c0b882" opacity="0.75" transform="rotate(4 194 38)"/>
+  <rect x="206" y="36" width="4" height="4" fill="#b02020" opacity="0.9"/>
+  <!-- red string -->
+  <line x1="134" y1="8" x2="172" y2="12" stroke="#c02020" stroke-width="1.2" opacity="0.6"/>
+  <line x1="172" y1="12" x2="210" y2="8" stroke="#c02020" stroke-width="1.2" opacity="0.6"/>
+  <line x1="132" y1="40" x2="208" y2="40" stroke="#c02020" stroke-width="1.2" opacity="0.5"/>
+  <line x1="134" y1="10" x2="132" y2="40" stroke="#c02020" stroke-width="1" opacity="0.4"/>
+  <!-- rainy window left -->
+  <rect x="0" y="6" width="102" height="78" fill="#0a1318" opacity="0.85"/>
+  <rect x="0" y="6" width="102" height="78" fill="none" stroke="#38280c" stroke-width="4"/>
+  <rect x="50" y="6" width="3" height="78" fill="#38280c"/>
+  <rect x="0" y="44" width="102" height="3" fill="#38280c"/>
+  <rect x="14" y="12" width="2" height="10" fill="#1c3050" opacity="0.38"/>
+  <rect x="30" y="18" width="2" height="12" fill="#1c3050" opacity="0.3"/>
+  <rect x="66" y="10" width="2" height="14" fill="#1c3050" opacity="0.38"/>
+  <rect x="82" y="28" width="2" height="10" fill="#1c3050" opacity="0.3"/>
+  <!-- filing cabinet right -->
+  <rect x="330" y="20" width="45" height="98" fill="#1c1a10"/>
+  <rect x="330" y="20" width="45" height="5" fill="#28261a"/>
+  <rect x="330" y="52" width="45" height="3" fill="#28261a"/>
+  <rect x="330" y="80" width="45" height="3" fill="#28261a"/>
+  <rect x="346" y="38" width="12" height="4" fill="#484020"/>
+  <rect x="346" y="64" width="12" height="4" fill="#484020"/>
+  <rect x="346" y="90" width="12" height="4" fill="#484020"/>
+</svg>
 
-<!-- Flash overlay -->
-<div class="flash-overlay" id="flashOverlay"></div>
+<div class="flash" id="fl"></div>
+<canvas id="cc"></canvas>
 
-<!-- Confetti canvas -->
-<canvas id="confetti-canvas"></canvas>
+<!-- PAGE 1: INTRO -->
+<div class="page active" id="page-intro" style="padding-top:58px;">
+  <div class="game-header">&#9632; CASE #4471-B &#9632;</div>
+  <div class="sub-header">&#8212; DETECTIVE BUREAU &#8212;</div>
+  <div class="case-badge">EYES ONLY // LEVEL 5 CLEARANCE</div>
+  <div style="text-align:center;margin-bottom:14px;"><span class="stamp">CLASSIFIED</span></div>
 
-<!-- ===== PAGE 1: INTRO ===== -->
-<div class="page active" id="page-intro" style="padding-top:56px;">
-
-  <div class="game-header">★ MISSION: FOOD ★</div>
-  <div class="sub-header">— QUEST BOARD —</div>
-
-  <div style="font-size:11px;color:var(--cyan);text-align:center;margin-bottom:16px">
-    ♥ ♥ ♥
-  </div>
-
-  <!-- Pixel character sprite (chef/guide) -->
+  <!-- SIMPLE FEMALE DETECTIVE SPRITE -->
   <div class="sprite-wrap">
-    <!-- Pixel art guide character made with SVG -->
-    <svg class="pixel-sprite" width="112" height="112" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated; width:112px; height:112px;">
-
-      <!-- HAIR BACK -->
-      <rect x="10" y="5"  width="3"  height="18" fill="#b01010"/>
-      <rect x="43" y="5"  width="3"  height="18" fill="#b01010"/>
-      <rect x="10" y="20" width="4"  height="5"  fill="#901000"/>
-      <rect x="42" y="20" width="4"  height="5"  fill="#901000"/>
-
+    <svg class="pixel-sprite" width="96" height="108" viewBox="0 0 48 54" fill="none" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated;width:96px;height:108px;">
+      <!-- HAIR back (red bob) -->
+      <rect x="10" y="10" width="3"  height="18" fill="#8a0c0c"/>
+      <rect x="35" y="10" width="3"  height="18" fill="#8a0c0c"/>
+      <!-- FEDORA brim -->
+      <rect x="5"  y="9"  width="38" height="3"  fill="#161208"/>
+      <rect x="3"  y="10" width="42" height="2"  fill="#161208"/>
+      <!-- crown -->
+      <rect x="12" y="3"  width="24" height="8"  fill="#1e1a08"/>
+      <rect x="10" y="4"  width="28" height="7"  fill="#1e1a08"/>
+      <!-- hat band amber -->
+      <rect x="12" y="9"  width="20" height="2"  fill="#b88010"/>
+      <!-- small bow right -->
+      <rect x="32" y="8"  width="6"  height="4"  fill="#c89018"/>
+      <rect x="34" y="7"  width="4"  height="6"  fill="#e8c040"/>
+      <!-- dent top -->
+      <rect x="20" y="3"  width="8"  height="2"  fill="#161208"/>
+      <!-- HAIR colour on top/bangs -->
+      <rect x="10" y="3"  width="28" height="8"  fill="#ae1010"/>
+      <rect x="12" y="10" width="6"  height="4"  fill="#ae1010"/>
+      <rect x="30" y="10" width="6"  height="4"  fill="#ae1010"/>
       <!-- HEAD -->
-      <rect x="13" y="6"  width="30" height="20" fill="#fdd9b5"/>
-      <rect x="11" y="8"  width="2"  height="16" fill="#fdd9b5"/>
-      <rect x="43" y="8"  width="2"  height="16" fill="#fdd9b5"/>
-
-      <!-- RED HAIR TOP -->
-      <rect x="11" y="2"  width="34" height="6"  fill="#cc1818"/>
-      <rect x="9"  y="4"  width="38" height="4"  fill="#cc1818"/>
-      <rect x="13" y="1"  width="30" height="2"  fill="#aa1010"/>
-      <!-- highlight -->
-      <rect x="19" y="2"  width="10" height="2"  fill="#e84040" opacity="0.7"/>
-
-      <!-- BANGS -->
-      <rect x="11" y="6"  width="34" height="5"  fill="#cc1818"/>
-      <rect x="11" y="11" width="5"  height="3"  fill="#cc1818"/>
-      <rect x="17" y="10" width="4"  height="3"  fill="#cc1818"/>
-      <rect x="35" y="10" width="4"  height="3"  fill="#cc1818"/>
-      <rect x="40" y="11" width="5"  height="3"  fill="#cc1818"/>
-      <!-- bob sides -->
-      <rect x="11" y="11" width="3"  height="10" fill="#cc1818"/>
-      <rect x="42" y="11" width="3"  height="10" fill="#cc1818"/>
-      <rect x="11" y="20" width="4"  height="4"  fill="#aa1010"/>
-      <rect x="41" y="20" width="4"  height="4"  fill="#aa1010"/>
-
-      <!-- YELLOW FLOWER CLIP -->
-      <rect x="37" y="4"  width="5"  height="5"  fill="#f8e000"/>
-      <rect x="35" y="6"  width="9"  height="3"  fill="#f8e000"/>
-      <rect x="39" y="3"  width="3"  height="7"  fill="#ffffa0"/>
-      <rect x="37" y="6"  width="5"  height="3"  fill="#f0a800"/>
-      <rect x="39" y="6"  width="2"  height="2"  fill="#ff8000"/>
-
-      <!-- LEFT EYE -->
-      <rect x="15" y="15" width="8"  height="6"  fill="#ffffff"/>
-      <rect x="16" y="16" width="6"  height="4"  fill="#4848d0"/>
-      <rect x="17" y="17" width="4"  height="3"  fill="#101028"/>
-      <rect x="17" y="17" width="2"  height="2"  fill="#ffffff"/>
-      <rect x="15" y="14" width="3"  height="2"  fill="#101028"/>
-      <rect x="20" y="14" width="2"  height="1"  fill="#101028"/>
-
-      <!-- RIGHT EYE -->
-      <rect x="33" y="15" width="8"  height="6"  fill="#ffffff"/>
-      <rect x="34" y="16" width="6"  height="4"  fill="#4848d0"/>
-      <rect x="35" y="17" width="4"  height="3"  fill="#101028"/>
-      <rect x="35" y="17" width="2"  height="2"  fill="#ffffff"/>
-      <rect x="34" y="14" width="2"  height="1"  fill="#101028"/>
-      <rect x="38" y="14" width="3"  height="2"  fill="#101028"/>
-
-      <!-- NOSE -->
-      <rect x="27" y="20" width="3"  height="1"  fill="#e8a878" opacity="0.9"/>
-
-      <!-- SMILE -->
-      <rect x="21" y="22" width="3"  height="1"  fill="#c06050"/>
-      <rect x="32" y="22" width="3"  height="1"  fill="#c06050"/>
-      <rect x="23" y="23" width="10" height="1"  fill="#c06050"/>
-      <rect x="25" y="22" width="6"  height="1"  fill="#efa090"/>
-
-      <!-- BLUSH -->
-      <rect x="12" y="19" width="5"  height="3"  fill="#ffb0a0" opacity="0.55"/>
-      <rect x="39" y="19" width="5"  height="3"  fill="#ffb0a0" opacity="0.55"/>
-
+      <rect x="12" y="11" width="24" height="16" fill="#ecc07a"/>
+      <rect x="10" y="13" width="2"  height="12" fill="#ecc07a"/>
+      <rect x="36" y="13" width="2"  height="12" fill="#ecc07a"/>
+      <!-- EYES simple (2 rects each) -->
+      <rect x="14" y="17" width="7"  height="4"  fill="#fff"/>
+      <rect x="15" y="18" width="5"  height="3"  fill="#080808"/>
+      <rect x="15" y="18" width="2"  height="1"  fill="#fff" opacity="0.5"/>
+      <!-- lashes top left -->
+      <rect x="14" y="15" width="7"  height="2"  fill="#080808"/>
+      <rect x="27" y="17" width="7"  height="4"  fill="#fff"/>
+      <rect x="28" y="18" width="5"  height="3"  fill="#080808"/>
+      <rect x="28" y="18" width="2"  height="1"  fill="#fff" opacity="0.5"/>
+      <!-- lashes top right -->
+      <rect x="27" y="15" width="7"  height="2"  fill="#080808"/>
+      <!-- BLUSH simple -->
+      <rect x="10" y="21" width="5"  height="3"  fill="#f0a080" opacity="0.4"/>
+      <rect x="33" y="21" width="5"  height="3"  fill="#f0a080" opacity="0.4"/>
+      <!-- MOUTH red lip -->
+      <rect x="18" y="24" width="12" height="2"  fill="#a01414"/>
       <!-- NECK -->
-      <rect x="23" y="26" width="10" height="3"  fill="#fdd9b5"/>
-
-      <!-- WHITE DRESS BODY -->
-      <rect x="14" y="29" width="28" height="16" fill="#f4f4ff"/>
-      <rect x="10" y="32" width="36" height="13" fill="#f4f4ff"/>
-      <!-- dress flare -->
-      <rect x="7"  y="43" width="42" height="5"  fill="#f0f0ff"/>
-      <rect x="5"  y="46" width="46" height="3"  fill="#ebebff"/>
-      <!-- lace hem -->
-      <rect x="5"  y="48" width="46" height="2"  fill="#dcdcff"/>
-      <rect x="7"  y="50" width="4"  height="2"  fill="#dcdcff"/>
-      <rect x="14" y="50" width="4"  height="2"  fill="#dcdcff"/>
-      <rect x="21" y="50" width="4"  height="2"  fill="#dcdcff"/>
-      <rect x="28" y="50" width="4"  height="2"  fill="#dcdcff"/>
-      <rect x="35" y="50" width="4"  height="2"  fill="#dcdcff"/>
-      <rect x="42" y="50" width="4"  height="2"  fill="#dcdcff"/>
-      <!-- collar -->
-      <rect x="20" y="28" width="16" height="3"  fill="#ffffff"/>
-      <rect x="18" y="29" width="20" height="2"  fill="#e8e8ff"/>
-      <!-- pink ribbon -->
-      <rect x="16" y="37" width="24" height="4"  fill="#f060b0"/>
-      <rect x="24" y="34" width="8"  height="8"  fill="#f060b0"/>
-      <rect x="26" y="35" width="4"  height="4"  fill="#ff90d0"/>
-
-      <!-- LEFT SLEEVE (normal arm down) -->
-      <rect x="8"  y="29" width="6"  height="9"  fill="#f4f4ff"/>
-      <rect x="7"  y="36" width="8"  height="2"  fill="#dcdcff"/>
-      <!-- left arm (skin) -->
-      <rect x="8"  y="38" width="6"  height="8"  fill="#fdd9b5"/>
-      <!-- left hand normal -->
-      <rect x="8"  y="45" width="6"  height="4"  fill="#fdd9b5"/>
-      <rect x="8"  y="44" width="2"  height="2"  fill="#fdd9b5"/>
-      <rect x="11" y="44" width="2"  height="2"  fill="#fdd9b5"/>
-
-      <!-- RIGHT ARM RAISED (doing finger heart) -->
-      <!-- upper arm going up -->
-      <rect x="42" y="22" width="6"  height="10" fill="#fdd9b5"/>
-      <!-- white sleeve on upper arm -->
-      <rect x="42" y="29" width="6"  height="6"  fill="#f4f4ff"/>
-      <rect x="42" y="34" width="6"  height="2"  fill="#dcdcff"/>
-      <!-- forearm angled up-right -->
-      <rect x="44" y="10" width="5"  height="14" fill="#fdd9b5"/>
-      <!-- FINGER HEART HAND -->
-      <!-- palm -->
-      <rect x="44" y="4"  width="8"  height="8"  fill="#fdd9b5"/>
-      <!-- index finger up-left -->
-      <rect x="44" y="0"  width="3"  height="6"  fill="#fdd9b5"/>
-      <!-- thumb up-right crossing -->
-      <rect x="49" y="1"  width="3"  height="5"  fill="#fdd9b5"/>
-      <!-- heart shape where tips cross -->
-      <rect x="45" y="0"  width="2"  height="2"  fill="#ff3060"/>
-      <rect x="49" y="0"  width="2"  height="2"  fill="#ff3060"/>
-      <rect x="44" y="1"  width="8"  height="2"  fill="#ff3060"/>
-      <rect x="45" y="3"  width="6"  height="2"  fill="#ff3060"/>
-      <rect x="46" y="5"  width="4"  height="1"  fill="#ff3060"/>
-      <rect x="47" y="6"  width="2"  height="1"  fill="#ff3060"/>
-      <!-- heart shine -->
-      <rect x="45" y="1"  width="2"  height="1"  fill="#ff90b0"/>
-
+      <rect x="20" y="27" width="8"  height="4"  fill="#ecc07a"/>
+      <!-- TRENCH COAT body (simple block) -->
+      <rect x="10" y="30" width="28" height="18" fill="#38280e"/>
+      <rect x="7"  y="34" width="34" height="14" fill="#38280e"/>
+      <!-- lapels simple V -->
+      <rect x="18" y="30" width="6"  height="8"  fill="#48381a"/>
+      <rect x="24" y="30" width="6"  height="8"  fill="#48381a"/>
+      <rect x="20" y="30" width="4"  height="5"  fill="#38280e"/>
+      <rect x="24" y="30" width="4"  height="5"  fill="#38280e"/>
+      <!-- belt -->
+      <rect x="12" y="42" width="24" height="3"  fill="#281c06"/>
+      <rect x="21" y="41" width="6"  height="5"  fill="#48381a"/>
+      <rect x="22" y="42" width="4"  height="3"  fill="#c0880c"/>
+      <!-- coat flare (A-line) -->
+      <rect x="5"  y="46" width="38" height="4"  fill="#30200a"/>
+      <rect x="3"  y="49" width="42" height="3"  fill="#2a1c08"/>
+      <!-- LEFT ARM — magnifying glass (simple) -->
+      <rect x="4"  y="31" width="7"  height="14" fill="#38280e"/>
+      <rect x="2"  y="43" width="8"  height="6"  fill="#ecc07a"/>
+      <!-- handle -->
+      <rect x="0"  y="47" width="5"  height="7"  fill="#886028"/>
+      <!-- mag frame (simple box) -->
+      <rect x="1"  y="31" width="8"  height="2"  fill="#c0900c"/>
+      <rect x="1"  y="41" width="8"  height="2"  fill="#c0900c"/>
+      <rect x="1"  y="31" width="2"  height="12" fill="#c0900c"/>
+      <rect x="7"  y="31" width="2"  height="12" fill="#c0900c"/>
+      <!-- lens -->
+      <rect x="3"  y="33" width="4"  height="8"  fill="#182030" opacity="0.7"/>
+      <rect x="3"  y="33" width="2"  height="2"  fill="#fff" opacity="0.25"/>
+      <!-- RIGHT ARM — raised, finger heart -->
+      <rect x="37" y="28" width="7"  height="12" fill="#38280e"/>
+      <rect x="37" y="38" width="7"  height="6"  fill="#ecc07a"/>
+      <rect x="37" y="26" width="7"  height="10" fill="#ecc07a"/>
+      <!-- index up -->
+      <rect x="37" y="20" width="3"  height="8"  fill="#ecc07a"/>
+      <!-- thumb -->
+      <rect x="41" y="21" width="3"  height="7"  fill="#ecc07a"/>
+      <!-- heart pixels -->
+      <rect x="38" y="20" width="2"  height="2"  fill="#b81010"/>
+      <rect x="42" y="20" width="2"  height="2"  fill="#b81010"/>
+      <rect x="37" y="21" width="7"  height="2"  fill="#b81010"/>
+      <rect x="38" y="23" width="5"  height="2"  fill="#b81010"/>
+      <rect x="39" y="25" width="3"  height="1"  fill="#b81010"/>
+      <rect x="40" y="26" width="2"  height="1"  fill="#b81010"/>
+      <rect x="38" y="21" width="2"  height="1"  fill="#e85070"/>
       <!-- LEGS -->
-      <rect x="18" y="51" width="8"  height="5"  fill="#fdd9b5"/>
-      <rect x="30" y="51" width="8"  height="5"  fill="#fdd9b5"/>
-
-      <!-- SHOES -->
-      <rect x="15" y="54" width="13" height="4"  fill="#5a1e00"/>
-      <rect x="28" y="54" width="13" height="4"  fill="#5a1e00"/>
-      <rect x="18" y="52" width="7"  height="2"  fill="#5a1e00"/>
-      <rect x="31" y="52" width="7"  height="2"  fill="#5a1e00"/>
-      <rect x="16" y="54" width="4"  height="2"  fill="#8b4020" opacity="0.6"/>
-      <rect x="29" y="54" width="4"  height="2"  fill="#8b4020" opacity="0.6"/>
-
-      <!-- SPARKLES -->
-      <rect x="1"  y="8"  width="3"  height="3"  fill="#f8e800"/>
-      <rect x="0"  y="9"  width="5"  height="1"  fill="#f8e800"/>
-      <rect x="1"  y="36" width="3"  height="3"  fill="#a0f820"/>
-      <rect x="0"  y="37" width="5"  height="1"  fill="#a0f820"/>
-      <!-- extra sparkle near heart -->
-      <rect x="39" y="2"  width="3"  height="3"  fill="#f820a8"/>
-      <rect x="38" y="3"  width="5"  height="1"  fill="#f820a8"/>
-      <rect x="34" y="0"  width="2"  height="2"  fill="#f8e800"/>
-      <rect x="33" y="1"  width="4"  height="1"  fill="#f8e800"/>
+      <rect x="16" y="51" width="6"  height="3"  fill="#281e14"/>
+      <rect x="26" y="51" width="6"  height="3"  fill="#281e14"/>
+      <!-- SHOES simple block + heel -->
+      <rect x="13" y="52" width="10" height="2"  fill="#0e0a04"/>
+      <rect x="25" y="52" width="10" height="2"  fill="#0e0a04"/>
+      <rect x="19" y="53" width="4"  height="2"  fill="#0e0a04"/>
+      <rect x="31" y="53" width="4"  height="2"  fill="#0e0a04"/>
+      <!-- sparkle left -->
+      <rect x="0"  y="15" width="2"  height="2"  fill="#d4a820"/>
+      <rect x="1"  y="13" width="1"  height="6"  fill="#d4a820" opacity="0.5"/>
+      <!-- sparkle right -->
+      <rect x="45" y="10" width="2"  height="2"  fill="#d4a820"/>
+      <rect x="46" y="8"  width="1"  height="6"  fill="#d4a820" opacity="0.5"/>
+      <!-- heart sparkle near hand -->
+      <rect x="44" y="18" width="2"  height="2"  fill="#b81010" opacity="0.7"/>
     </svg>
   </div>
 
   <div class="pixel-panel">
     <div class="title-bar">
-      <span class="title-bar-text">GUIDE ANGIE</span>
-      <div class="title-bar-dots">
-        <div class="dot r"></div>
-        <div class="dot y"></div>
-        <div class="dot g"></div>
-      </div>
+      <span class="title-bar-text">DET. ANGIE // ON DUTY</span>
+      <div class="title-bar-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
     </div>
-
     <div class="dialogue-box">
-      <div class="dialogue-name">▶ ANGIE:</div>
+      <div class="dialogue-name">&#9654; DET. ANGIE:</div>
       <div class="dialogue-text" id="introText"></div>
     </div>
-
-    <div class="pixel-divider"></div>
-
-    <button class="pixel-btn" id="continueBtn" onclick="goToBoxes()" style="display:none">
-      ▶ ACCEPT MISSION
-    </button>
-    <div class="press-start" id="pressStart" style="display:none">▼ PRESS TO CONTINUE</div>
+    <div class="divider"></div>
+    <button class="pixel-btn" id="continueBtn" onclick="goToBoxes()" style="display:none">&#9654; EXAMINE DOSSIERS</button>
   </div>
 </div>
 
-<!-- ===== PAGE 2: BOX SELECTION ===== -->
-<div class="page" id="page-boxes" style="padding-top:56px;">
-
-  <div class="game-header">CHOOSE YOUR BOX</div>
-  <div class="sub-header">— 4 MYSTERY CHESTS —</div>
-  <div style="font-size:11px;color:var(--red);text-align:center;margin-bottom:16px">♥ ♥ ♥</div>
+<!-- PAGE 2: FILE SELECTION -->
+<div class="page" id="page-boxes" style="padding-top:58px;">
+  <div class="game-header">&#9632; OPEN A DOSSIER &#9632;</div>
+  <div class="sub-header">&#8212; 4 SEALED CASE FILES &#8212;</div>
+  <div style="text-align:center;margin-bottom:14px;"><span class="stamp">DO NOT OPEN</span></div>
 
   <div class="boxes-grid" id="boxesGrid">
-    <div class="gift-box" id="box-0" onclick="openBox(0)">
-      <span class="box-num">BOX 1</span>
-      <span class="box-icon">📦</span>
-      <div class="box-label">??? <br>MYSTERY<br>CHEST</div>
-    </div>
-    <div class="gift-box" id="box-1" onclick="openBox(1)">
-      <span class="box-num">BOX 2</span>
-      <span class="box-icon">🎁</span>
-      <div class="box-label">??? <br>MYSTERY<br>CHEST</div>
-    </div>
-    <div class="gift-box" id="box-2" onclick="openBox(2)">
-      <span class="box-num">BOX 3</span>
-      <span class="box-icon">📦</span>
-      <div class="box-label">??? <br>MYSTERY<br>CHEST</div>
-    </div>
-    <div class="gift-box" id="box-3" onclick="openBox(3)">
-      <span class="box-num">BOX 4</span>
-      <span class="box-icon">🎁</span>
-      <div class="box-label">??? <br>MYSTERY<br>CHEST</div>
-    </div>
+    <div class="gift-box" id="box-0" onclick="openBox(0)"><span class="box-num">FILE 01</span><span class="box-icon">&#128193;</span><div class="box-label">SEALED<br>DOSSIER<br>&#9608;&#9608;&#9608;</div></div>
+    <div class="gift-box" id="box-1" onclick="openBox(1)"><span class="box-num">FILE 02</span><span class="box-icon">&#128194;</span><div class="box-label">SEALED<br>DOSSIER<br>&#9608;&#9608;&#9608;</div></div>
+    <div class="gift-box" id="box-2" onclick="openBox(2)"><span class="box-num">FILE 03</span><span class="box-icon">&#128193;</span><div class="box-label">SEALED<br>DOSSIER<br>&#9608;&#9608;&#9608;</div></div>
+    <div class="gift-box" id="box-3" onclick="openBox(3)"><span class="box-num">FILE 04</span><span class="box-icon">&#128194;</span><div class="box-label">SEALED<br>DOSSIER<br>&#9608;&#9608;&#9608;</div></div>
   </div>
 
   <div class="pixel-panel" style="max-width:360px">
     <div class="title-bar">
-      <span class="title-bar-text">MISSION BRIEF</span>
-      <div class="title-bar-dots">
-        <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
-      </div>
+      <span class="title-bar-text">FIELD NOTES</span>
+      <div class="title-bar-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
     </div>
-    <div style="color:var(--white);font-size:7px;line-height:2.2;text-align:center;">
-      TAP A CHEST TO<br>REVEAL YOUR<br>RESTAURANT DESTINY!
-    </div>
+    <div style="color:var(--cream);font-size:6px;line-height:2.4;text-align:center;opacity:0.8;">FOLLOW YOUR GUT.<br>TAP A FILE TO<br>CRACK IT OPEN.</div>
   </div>
 </div>
 
-<!-- ===== PAGE 3: RESULT ===== -->
-<div class="page" id="page-result" style="padding-top:56px;">
-
-  <div class="result-header">★ QUEST COMPLETE! ★</div>
-  <div class="result-score" id="resultScore">SCORE: +9999 EXP</div>
+<!-- PAGE 3: RESULT -->
+<div class="page" id="page-result" style="padding-top:58px;">
+  <div class="result-header">&#9632; LEAD CONFIRMED &#9632;</div>
+  <div class="result-score" id="resultScore">INTEL SCORE: &#9608;&#9608;&#9608;&#9608; PTS</div>
 
   <div class="pixel-panel">
     <div class="title-bar">
-      <span class="title-bar-text">MISSION RESULT</span>
-      <div class="title-bar-dots">
-        <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
-      </div>
+      <span class="title-bar-text">MISSION ISSUED</span>
+      <div class="title-bar-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
     </div>
-
-    <span class="result-icon" id="resultEmoji">🍜</span>
-    <div style="color:var(--cyan);font-size:7px;text-align:center;margin-bottom:6px;letter-spacing:1px">DESTINATION UNLOCKED:</div>
-    <div class="result-name" id="resultName">OTTUGI</div>
-
-    <div class="pixel-divider"></div>
-
-    <div class="hp-bar-wrap">
-      <div class="hp-label">HUNGER METER:</div>
-      <div class="hp-bar"><div class="hp-fill" id="hpFill"></div></div>
+    <span class="result-icon" id="resultEmoji">&#128269;</span>
+    <div style="color:var(--cream);font-size:5px;text-align:center;margin-bottom:6px;letter-spacing:2px;opacity:0.65;">YOUR NEXT MOVE:</div>
+    <div class="result-name" id="resultName">???</div>
+    <div class="divider"></div>
+    <div class="bar-wrap">
+      <div class="bar-label">OPERATIVE READINESS:</div>
+      <div class="bar"><div class="bar-fill" id="barFill"></div></div>
     </div>
-
-    <div class="result-msg" id="resultMsg">YOUR FOOD DESTINY<br>HAS BEEN DECIDED!</div>
-
-    <div class="pixel-divider"></div>
-
-    <button class="pixel-btn cyan mt16" onclick="resetGame()">
-      ↺ PLAY AGAIN
-    </button>
+    <div class="result-msg" id="resultMsg">DECODING...</div>
+    <div class="divider"></div>
+    <div style="text-align:center;margin-bottom:14px;"><span class="stamp">CASE CLOSED</span></div>
+    <button class="pixel-btn red-btn mt16" onclick="resetGame()">&#8635; PULL A NEW FILE</button>
   </div>
-
 </div>
 
 <script>
-const restaurants = [
-  { name: "CULTRA TAPROOM",   emoji: "🍝", msg: "FUSION ITALIAN QUEST!\nCRAFT PASTA POWER UP!" },
-  { name: "MEDITERRANEO",     emoji: "🫒", msg: "MED CUISINE AWAITS!\n+10 OLIVE OIL BONUS!" },
-  { name: "PIZZA 4PS",        emoji: "🍕", msg: "PIZZA DUNGEON!\nFARM TO TABLE POWER UP!" },
-  { name: "CHOPS BURGER",     emoji: "🍔", msg: "BURGER BOSS FIGHT!\nSTAMINA FULLY RESTORED!" }
+const activities=[
+  {name:"CRIME SCENARIO",  emoji:"&#128269;",msg:"SCENE OF THE CRIME.\nREAD THE CLUES.\nDON'T BLINK."},
+  {name:"UNLOCK BOARD GAME",emoji:"&#128221;",msg:"LOCKED BOX.\nCODE UNKNOWN.\nCRACK IT."},
+  {name:"1V1 PICKLEBALL",  emoji:"&#127955;",msg:"ONE SUSPECT.\nONE COURT.\nCLOSE THE CASE."},
+  {name:"TOUR DEM\nNHA TU HOA LO",emoji:"&#127963;",msg:"COLD WALLS.\nOLD SECRETS.\nFOLLOW THE TRAIL."}
 ];
 
-let shuffled = [];
+let shuffled=[];
 
-// Stars
-(function() {
-  const sf = document.getElementById('starfield');
-  for (let i = 0; i < 60; i++) {
-    const s = document.createElement('div');
-    s.className = 'star';
-    s.style.left = Math.random() * 100 + '%';
-    s.style.top  = Math.random() * 100 + '%';
-    s.style.animationDuration = (1.5 + Math.random() * 3) + 's';
-    s.style.animationDelay = (Math.random() * 3) + 's';
-    s.style.width = s.style.height = (Math.random() > 0.7 ? '4px' : '2px');
-    s.style.opacity = 0.4 + Math.random() * 0.6;
-    sf.appendChild(s);
-  }
-})();
+// dust
+(function(){for(let i=0;i<16;i++){const d=document.createElement('div');d.className='dust';d.style.left=Math.random()*100+'%';d.style.animationDuration=(12+Math.random()*14)+'s';d.style.animationDelay=(Math.random()*16)+'s';d.style.width=d.style.height=(Math.random()>.6?'3px':'2px');document.body.appendChild(d);}})();
 
-// Typewriter
-function typewrite(el, text, speed, cb) {
-  el.innerHTML = '';
-  let i = 0;
-  const span = document.createElement('span');
-  span.className = 'typewriter';
-  el.appendChild(span);
-  const iv = setInterval(() => {
-    if (i < text.length) {
-      span.textContent += text[i++];
-    } else {
-      clearInterval(iv);
-      span.classList.remove('typewriter');
-      if (cb) cb();
-    }
-  }, speed);
+function typewrite(el,text,speed,cb){
+  el.innerHTML='';let i=0;
+  const span=document.createElement('span');span.className='typewriter';el.appendChild(span);
+  const iv=setInterval(()=>{if(i<text.length){span.textContent+=text[i++];}else{clearInterval(iv);span.classList.remove('typewriter');if(cb)cb();}},speed);
 }
 
-// Intro typewriter
-window.addEventListener('load', () => {
-  const el = document.getElementById('introText');
-  const msg = 'Could you do a\nfavor by letting\nyour intuition\nguide?\n\nMoa moa ~';
-  typewrite(el, msg, 42, () => {
-    document.getElementById('continueBtn').style.display = 'block';
-    document.getElementById('pressStart').style.display = 'none';
+const introMsg="Got a hunch,\npartner?\n\nSomething's\nafoot tonight.\n\nPick a file.\nLet's move.";
+
+window.addEventListener('load',()=>{
+  typewrite(document.getElementById('introText'),introMsg,46,()=>{
+    document.getElementById('continueBtn').style.display='block';
   });
 });
 
-function shuffle(arr) {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
+function shuffle(a){const r=[...a];for(let i=r.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[r[i],r[j]]=[r[j],r[i]];}return r;}
 
-function goToBoxes() {
-  shuffled = shuffle(restaurants);
-  // Reset boxes
-  for (let i = 0; i < 4; i++) {
-    const b = document.getElementById('box-' + i);
-    b.className = 'gift-box';
-    b.onclick = () => openBox(i);
-    b.innerHTML = `
-      <span class="box-num">BOX ${i+1}</span>
-      <span class="box-icon">${i % 2 === 0 ? '📦' : '🎁'}</span>
-      <div class="box-label">???<br>MYSTERY<br>CHEST</div>
-    `;
+function goToBoxes(){
+  shuffled=shuffle(activities);
+  for(let i=0;i<4;i++){
+    const b=document.getElementById('box-'+i);
+    b.className='gift-box';b.onclick=()=>openBox(i);
+    b.innerHTML=`<span class="box-num">FILE 0${i+1}</span><span class="box-icon">${i%2===0?'&#128193;':'&#128194;'}</span><div class="box-label">SEALED<br>DOSSIER<br>&#9608;&#9608;&#9608;</div>`;
   }
   showPage('page-boxes');
 }
 
-function flashScreen() {
-  const f = document.getElementById('flashOverlay');
-  f.classList.remove('active');
-  void f.offsetWidth;
-  f.classList.add('active');
-}
+function flash(){const f=document.getElementById('fl');f.classList.remove('go');void f.offsetWidth;f.classList.add('go');}
 
-function openBox(index) {
-  const box = document.getElementById('box-' + index);
-  if (box.classList.contains('opened')) return;
-
-  // Play shake
+function openBox(index){
+  const box=document.getElementById('box-'+index);
+  if(box.classList.contains('opened'))return;
   box.classList.add('shake');
-  setTimeout(() => {
-    box.classList.remove('shake');
-    box.classList.add('opened');
-    box.onclick = null;
-
-    const rest = shuffled[index];
-    flashScreen();
-
-    box.innerHTML = `
-      <span class="box-num">BOX ${index+1}</span>
-      <div class="box-reveal-icon">${rest.emoji}</div>
-      <div class="box-reveal">${rest.name}</div>
-    `;
-
-    setTimeout(() => showResult(rest), 700);
-  }, 350);
+  setTimeout(()=>{
+    box.classList.remove('shake');box.classList.add('opened');box.onclick=null;
+    const act=shuffled[index];flash();
+    box.innerHTML=`<span class="box-num">FILE 0${index+1}</span><div class="box-reveal-icon">${act.emoji}</div><div class="box-reveal">${act.name}</div>`;
+    setTimeout(()=>showResult(act),650);
+  },320);
 }
 
-function showResult(rest) {
-  document.getElementById('resultEmoji').textContent = rest.emoji;
-  document.getElementById('resultName').textContent = rest.name;
-  document.getElementById('resultMsg').innerHTML = rest.msg.replace(/\n/g, '<br>');
-  document.getElementById('resultScore').textContent = 'SCORE: +' + (Math.floor(Math.random()*9000)+1000) + ' EXP';
-
-  // Reset HP bar animation
-  const hp = document.getElementById('hpFill');
-  hp.style.animation = 'none';
-  void hp.offsetWidth;
-  hp.style.animation = '';
-
-  showPage('page-result');
-  launchPixelConfetti();
+function showResult(act){
+  document.getElementById('resultEmoji').innerHTML=act.emoji;
+  document.getElementById('resultName').innerHTML=act.name.replace(/\n/g,'<br>');
+  document.getElementById('resultMsg').innerHTML=act.msg.replace(/\n/g,'<br>');
+  document.getElementById('resultScore').textContent='INTEL SCORE: '+(Math.floor(Math.random()*9000)+1000)+' PTS';
+  const bf=document.getElementById('barFill');bf.style.animation='none';void bf.offsetWidth;bf.style.animation='';
+  showPage('page-result');launchConfetti();
 }
 
-function showPage(id) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  window.scrollTo(0, 0);
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');window.scrollTo(0,0);
 }
 
-function resetGame() {
+function resetGame(){
   showPage('page-intro');
-  const el = document.getElementById('introText');
-  document.getElementById('continueBtn').style.display = 'none';
-  document.getElementById('pressStart').style.display = 'none';
-  const msg = 'Could you do a\nfavor by letting\nyour intuition\nguide?\n\nMoa moa ~';
-  typewrite(el, msg, 42, () => {
-    document.getElementById('continueBtn').style.display = 'block';
-  });
+  document.getElementById('continueBtn').style.display='none';
+  typewrite(document.getElementById('introText'),introMsg,46,()=>{document.getElementById('continueBtn').style.display='block';});
 }
 
-// Pixel confetti
-const canvas = document.getElementById('confetti-canvas');
-const ctx = canvas.getContext('2d');
-let pieces = [], animId;
-const colors = ['#f8e800','#e82020','#20e840','#20e8f8','#f820a8','#f89820','#5858f8','#a0a0ff'];
-
-function launchPixelConfetti() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-  pieces = [];
-  for (let i = 0; i < 80; i++) {
-    pieces.push({
-      x: Math.random() * canvas.width,
-      y: -10,
-      size: (Math.random() > 0.5 ? 8 : 6),
-      color: colors[Math.floor(Math.random() * colors.length)],
-      vx: (Math.random() - 0.5) * 6,
-      vy: 2 + Math.random() * 5,
-      life: 1
-    });
-  }
-  cancelAnimationFrame(animId);
-  drawConfetti();
-  setTimeout(() => { cancelAnimationFrame(animId); ctx.clearRect(0,0,canvas.width,canvas.height); }, 3500);
+// confetti
+const cv=document.getElementById('cc'),ctx=cv.getContext('2d');
+let pp=[],aid;
+const cols=['#d4a820','#8b1a1a','#c8c090','#3a6a3a','#c0b870','#a07030','#e8d080'];
+function launchConfetti(){
+  cv.width=window.innerWidth;cv.height=window.innerHeight;pp=[];
+  for(let i=0;i<50;i++)pp.push({x:Math.random()*cv.width,y:-10,w:5+Math.random()*9,h:3+Math.random()*7,color:cols[Math.floor(Math.random()*cols.length)],vx:(Math.random()-.5)*5,vy:2+Math.random()*4,rot:Math.random()*360,rv:(Math.random()-.5)*6});
+  cancelAnimationFrame(aid);draw();
+  setTimeout(()=>{cancelAnimationFrame(aid);ctx.clearRect(0,0,cv.width,cv.height);},3500);
 }
-
-function drawConfetti() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  let alive = false;
-  pieces.forEach(p => {
-    if (p.y > canvas.height + 20) return;
-    alive = true;
-    p.x += p.vx;
-    p.y += p.vy;
-    p.vy += 0.12;
-    ctx.globalAlpha = Math.max(0, p.life);
-    ctx.fillStyle = p.color;
-    // Pixel squares
-    ctx.fillRect(Math.round(p.x), Math.round(p.y), p.size, p.size);
-  });
-  ctx.globalAlpha = 1;
-  if (alive) animId = requestAnimationFrame(drawConfetti);
+function draw(){
+  ctx.clearRect(0,0,cv.width,cv.height);let alive=false;
+  pp.forEach(p=>{if(p.y>cv.height+20)return;alive=true;p.x+=p.vx;p.y+=p.vy;p.vy+=0.1;p.rot+=p.rv;ctx.save();ctx.globalAlpha=0.8;ctx.translate(Math.round(p.x),Math.round(p.y));ctx.rotate(p.rot*Math.PI/180);ctx.fillStyle=p.color;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore();});
+  ctx.globalAlpha=1;if(alive)aid=requestAnimationFrame(draw);
 }
 </script>
 </body>
