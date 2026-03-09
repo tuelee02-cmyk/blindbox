@@ -342,8 +342,8 @@ body::after{content:'';position:fixed;top:0;left:0;width:100%;height:100%;backgr
 const activities=[
   {name:"CRIME SCENARIO",  emoji:"&#128269;",msg:"SCENE OF THE CRIME.\nREAD THE CLUES.\nDON'T BLINK."},
   {name:"UNLOCK BOARD GAME",emoji:"&#128221;",msg:"LOCKED BOX.\nCODE UNKNOWN.\nCRACK IT."},
-  {name:"1V1 PICKLEBALL",  emoji:"&#127955;",msg:"ONE SUSPECT.\nONE COURT.\nCLOSE THE CASE."},
-  {name:"TOUR DEM\nNHA TU HOA LO",emoji:"&#127963;",msg:"COLD WALLS.\nOLD SECRETS.\nFOLLOW THE TRAIL."}
+  {name:"ADMIN STUFF\nWORKDATE",emoji:"&#128203;",msg:"PAPERWORK.\nDUE DATES.\nCLEAR THE BACKLOG."},
+  {name:"MOVIE DATE\n(TBD)",        emoji:"&#127916;",msg:"LIGHTS DOWN.\nTITLE UNKNOWN.\nPICK THE FILM."}
 ];
 
 let shuffled=[];
@@ -386,7 +386,7 @@ function openBox(index){
   setTimeout(()=>{
     box.classList.remove('shake');box.classList.add('opened');box.onclick=null;
     const act=shuffled[index];flash();
-    box.innerHTML=`<span class="box-num">FILE 0${index+1}</span><div class="box-reveal-icon">${act.emoji}</div><div class="box-reveal">${act.name}</div>`;
+    box.innerHTML=`<span class="box-num">FILE 0${index+1}</span><div class="box-reveal-icon">${act.emoji}</div><div class="box-reveal">${act.name.replace(/\n/g,'<br>')}</div>`;
     setTimeout(()=>showResult(act),650);
   },320);
 }
