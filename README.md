@@ -8,10 +8,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght@400;700;900&display=swap');
 :root { --gold:#FFD700; --dark:#0d0820; }
 *{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;}
 body {
   min-height:100vh; background:var(--dark);
   display:flex; flex-direction:column; align-items:center; justify-content:center;
   font-family:'Nunito',sans-serif; overflow:hidden;
+  padding:12px;
   background-image:
     radial-gradient(ellipse 80% 60% at 50% 0%,#2a0a5e44 0%,transparent 70%),
     repeating-linear-gradient(0deg,transparent,transparent 40px,rgba(255,255,255,.015) 40px,rgba(255,255,255,.015) 41px),
@@ -20,10 +22,11 @@ body {
 .stars{position:fixed;inset:0;pointer-events:none;}
 .star{position:absolute;border-radius:50%;background:white;opacity:0;animation:twinkle var(--d) var(--dl) infinite;}
 @keyframes twinkle{0%,100%{opacity:0;transform:scale(0)}50%{opacity:.9;transform:scale(1)}}
-h1{font-family:'Bangers',cursive;font-size:2.4rem;letter-spacing:4px;color:var(--gold);
-   text-shadow:0 0 30px #FFD70099,3px 3px 0 #550088;margin-bottom:6px;z-index:10;text-align:center;}
-.subtitle{color:#8877aa;font-size:.8rem;margin-bottom:32px;z-index:10;letter-spacing:2px;text-transform:uppercase;}
+h1{font-family:'Bangers',cursive;font-size:clamp(1.5rem,7vw,2.4rem);letter-spacing:4px;color:var(--gold);
+   text-shadow:0 0 30px #FFD70099,3px 3px 0 #550088;margin-bottom:4px;z-index:10;text-align:center;}
+.subtitle{color:#8877aa;font-size:clamp(.55rem,.75rem,2.2vw);margin-bottom:clamp(14px,2.5vh,32px);z-index:10;letter-spacing:1px;text-transform:uppercase;text-align:center;padding:0 8px;}
 .scene{perspective:1200px;z-index:10;position:relative;}
+.pack-scale{transform-origin:top center;transform:scale(var(--ps,1));height:calc(440px * var(--ps,1));}
 .pack-wrapper{position:relative;width:300px;height:440px;cursor:grab;user-select:none;}
 .pack{position:absolute;inset:0;border-radius:16px;overflow:hidden;box-shadow:0 30px 80px #7700aa66,0 0 0 1.5px #ffffff33;}
 .pack-svg{position:absolute;inset:0;width:100%;height:100%;}
@@ -97,6 +100,7 @@ h1{font-family:'Bangers',cursive;font-size:2.4rem;letter-spacing:4px;color:var(-
 <h1>⚡ DINNEMON ⚡</h1>
 <p class="subtitle">Master Duong — your dinner awaits. Choose your fate.</p>
 <div class="scene">
+<div class="pack-scale" id="packScale">
 <div class="pack-wrapper" id="packWrapper">
 
   <!-- CARD behind pack -->
@@ -288,6 +292,7 @@ h1{font-family:'Bangers',cursive;font-size:2.4rem;letter-spacing:4px;color:var(-
     </svg>
   </div>
 
+</div>
 </div>
 </div>
 <button class="reset-btn" id="resetBtn" onclick="resetPack()">↺ DRAW AGAIN</button>
@@ -640,6 +645,21 @@ for(let i=0;i<80;i++){
   s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${2+Math.random()*5}s;--dl:${Math.random()*5}s;`;
   starsEl.appendChild(s);
 }
+
+// Responsive scaling: shrink pack to fit viewport
+function scalePack(){
+  const packW=300, packH=440;
+  const vw=window.innerWidth, vh=window.innerHeight;
+  // reserve space for title (~70px) + subtitle (~28px) + button (~70px) + padding (48px)
+  const reserved=216;
+  const availH=vh-reserved;
+  const availW=vw-32;
+  const scale=Math.min(1, availW/packW, availH/packH);
+  document.getElementById('packScale').style.cssText=
+    `transform-origin:top center;transform:scale(${scale});height:${packH*scale}px;`;
+}
+scalePack();
+window.addEventListener('resize',scalePack);
 </script>
 </body>
 </html>
