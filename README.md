@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mystery Meal Card</title>
+<title>Dinnemon - Master Duong</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght@400;700;900&display=swap');
 :root { --gold:#FFD700; --dark:#0d0820; }
@@ -94,8 +94,8 @@ h1{font-family:'Bangers',cursive;font-size:2.4rem;letter-spacing:4px;color:var(-
 </head>
 <body>
 <div class="stars" id="stars"></div>
-<h1>🎴 MYSTERY MEAL CARD 🎴</h1>
-<p class="subtitle">Tear the pack · Reveal your destiny</p>
+<h1>⚡ DINNEMON ⚡</h1>
+<p class="subtitle">Master Duong — your dinner awaits. Choose your fate.</p>
 <div class="scene">
 <div class="pack-wrapper" id="packWrapper">
 
@@ -239,7 +239,7 @@ h1{font-family:'Bangers',cursive;font-size:2.4rem;letter-spacing:4px;color:var(-
       <g transform="translate(150,96)">
         <rect x="-95" y="-26" width="190" height="52" rx="9" fill="rgba(0,0,0,0.45)" stroke="rgba(255,255,255,.3)" stroke-width="1.5"/>
         <rect x="-93" y="-24" width="186" height="48" rx="7" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="1"/>
-        <text x="0" y="-7" text-anchor="middle" font-family="Bangers,cursive" font-size="24" fill="white" letter-spacing="3">MYSTERY MEAL</text>
+        <text x="0" y="-7" text-anchor="middle" font-family="Bangers,cursive" font-size="24" fill="white" letter-spacing="3">DINNEMON</text>
         <text x="0" y="13" text-anchor="middle" font-family="sans-serif" font-size="8" fill="rgba(255,255,255,.65)" letter-spacing="4">COLLECTOR SERIES</text>
       </g>
 
@@ -280,7 +280,7 @@ h1{font-family:'Bangers',cursive;font-size:2.4rem;letter-spacing:4px;color:var(-
       <polygon points="150,8 152,3 154,8 159,8 155,11 156.5,16 152,13 147.5,16 149,11 145,8" fill="rgba(255,255,255,.5)"/>
       <!-- Center badge -->
       <rect x="88" y="28" width="124" height="48" rx="8" fill="rgba(0,0,0,.38)" stroke="rgba(255,255,255,.28)" stroke-width="1.5"/>
-      <text x="150" y="50" text-anchor="middle" font-family="Bangers,cursive" font-size="20" fill="white" letter-spacing="2">MYSTERY</text>
+      <text x="150" y="50" text-anchor="middle" font-family="Bangers,cursive" font-size="20" fill="white" letter-spacing="2">DINNEMON</text>
       <text x="150" y="67" text-anchor="middle" font-family="sans-serif" font-size="7" fill="rgba(255,255,255,.7)" letter-spacing="3">DRAG UP TO TEAR</text>
       <!-- Torn bottom edge -->
       <path d="M0,106 L0,119 L10,112 L20,119 L32,110 L44,119 L56,111 L68,118 L80,110 L92,119 L104,109 L116,118 L128,112 L140,119 L152,108 L164,118 L176,112 L188,119 L200,109 L212,118 L224,111 L236,119 L248,110 L260,119 L272,111 L284,119 L294,112 L300,119 L300,106 Z"
@@ -298,7 +298,7 @@ const restaurants = [
     name:"POP QUIZ Irish Beer", stage:"LEGENDARY PUB",
     type:"fire", typeName:"FIRE", hp:110, number:"No. 047",
     flavor:"When the trivia night begins, all challengers tremble. Its golden pints are said to grant +10 INT for the duration of the quiz.",
-    weakness:"💧 Water ×2",
+    weakness:"Water x2",
     attacks:[
       {energies:["fire"],name:"Pint of the Day",desc:"Restore 20HP to self",dmg:"40"},
       {energies:["fire","fire","colorless"],name:"Quiz Master's Fury",desc:"Flip a coin; if heads, opponent is confused",dmg:"90"},
@@ -310,7 +310,7 @@ const restaurants = [
     name:"BAO WOW", stage:"STAGE 1",
     type:"water", typeName:"WATER", hp:90, number:"No. 023",
     flavor:"Pillowy-soft bao buns that have evolved beyond mere sustenance. Opponents often forget what they were doing mid-bite.",
-    weakness:"⚡ Lightning ×2",
+    weakness:"Lightning x2",
     attacks:[
       {energies:["water"],name:"Steamed Surprise",desc:"",dmg:"30"},
       {energies:["water","water"],name:"Bao Blast",desc:"Discard 1 water energy; does 30 more damage",dmg:"70"},
@@ -319,13 +319,13 @@ const restaurants = [
     art: drawBaoWow
   },
   {
-    name:"CƠM NHÀ Việt Nam", stage:"BASIC",
+    name:"COM NHA VIET NAM", stage:"BASIC",
     type:"grass", typeName:"GRASS", hp:100, number:"No. 001",
-    flavor:"A timeless force of nature. Its Phở Power heals the soul, and its rice plates contain memories of home.",
-    weakness:"🔥 Fire ×2",
+    flavor:"A timeless force of nature. Its Pho Power heals the soul, and its rice plates contain memories of home.",
+    weakness:"Fire x2",
     attacks:[
-      {energies:["grass"],name:"Phở Power",desc:"Heal 20 damage from this Pokémon",dmg:"35"},
-      {energies:["grass","grass","colorless"],name:"Cơm Tấm Crush",desc:"",dmg:"80"},
+      {energies:["grass"],name:"Pho Power",desc:"Heal 20 damage from this Pokemon",dmg:"35"},
+      {energies:["grass","grass","colorless"],name:"Com Tam Crush",desc:"",dmg:"80"},
     ],
     rarity:"★★★",
     art: drawComNha
